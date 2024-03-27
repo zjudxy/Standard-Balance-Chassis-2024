@@ -1,0 +1,4 @@
+[submodule "Wiki"]
+	path = Wiki
+	url = https://github.com/ZJU-HelloWorld/Wiki.git
+	branch = main

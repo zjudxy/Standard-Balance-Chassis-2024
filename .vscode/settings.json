@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.ino": "c",
+        "Misson": "c",
+        "*.asm": "asm-intel-x86-generic",
+        "limits": "cpp",
+        "cmath": "cpp",
+        "rfr_pkg_0x0307_inter_robot_traj.hpp": "c",
+        "chassis.hpp": "c",
+        "cstddef": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "ranges": "cpp",
+        "referee.hpp": "c"
+    }
+}
