@@ -47,6 +47,7 @@ void SwitchTask(void)
     SteerModeSwitch();
 }
 
+bool abnormal_flag = false;
 /**
  * @brief       检测状态处理
  * @retval      None
@@ -54,13 +55,28 @@ void SwitchTask(void)
  */
 static void DetectStateHandle(void)
 {
-    if (robot.detect_states.abnormal)
+    abnormal_flag = false;
+    if ((robot.detect_states.abnormal&&robot.detect_states.abnormal_type == Abnormal_dangerous) || robot.detect_states.low_battery)
     {
         robot.chassis_mode.ref = CHASSIS_RECOVERY;
+        abnormal_flag = true;
     }
-    else if (robot.detect_states.on_ground == false && robot.chassis_mode.curr == CHASSIS_MATURE)
+
+    else if (robot.chassis_mode.curr == CHASSIS_MATURE)
     {
-        robot.chassis_mode.ref = CHASSIS_FLY;
+        if (robot.steer_mode.curr == STEER_GYRO)
+        {
+            if (!robot.detect_states.on_ground[BODY])
+            {
+                robot.chassis_mode.ref = CHASSIS_FLY;
+                abnormal_flag = true;
+            }
+        }
+        else if (!robot.detect_states.on_ground[LEFT] || !robot.detect_states.on_ground[RIGHT])
+        {
+            robot.chassis_mode.ref = CHASSIS_FLY;
+            abnormal_flag = true;
+        }
     }
 }
 /**
@@ -76,7 +92,7 @@ static void ChassisRefModeGen(void)
         return;
     }
 
-    if (robot.cmd.chassis_mode_ref == robot.chassis_mode.ref)
+    if (robot.cmd.chassis_mode_ref == robot.chassis_mode.ref||abnormal_flag)
     {
         return;
     }
@@ -147,18 +163,26 @@ static void ChassisModeSwitch(void)
         {
             robot.chassis_mode.last = robot.chassis_mode.curr;
             robot.chassis_mode.curr = CHASSIS_FLY;
+            
         }
         break;
     case CHASSIS_MATURE:
         if (robot.chassis_mode.curr == CHASSIS_DEAD)
         {
             robot.chassis_mode.last = robot.chassis_mode.curr;
-            robot.chassis_mode.curr = CHASSIS_CONFIRM;
+            if (robot.joint_ang_cal_flag)
+            {
+                robot.chassis_mode.curr = CHASSIS_RECOVERY;
+            }
+            else
+            {
+                robot.chassis_mode.curr = CHASSIS_CONFIRM;
+            }
         }
         break;
     case CHASSIS_JUMP:
-        if (robot.chassis_mode.curr == CHASSIS_MATURE && robot.cmd.height == kHeightMid &&
-            robot.steer_mode.curr == STEER_MOVE)
+        if (robot.chassis_mode.curr == CHASSIS_MATURE &&
+            (robot.steer_mode.curr == STEER_MOVE || robot.steer_mode.curr == STEER_DEPART))
         {
             robot.chassis_mode.last = robot.chassis_mode.curr;
             robot.chassis_mode.curr = CHASSIS_JUMP;
@@ -172,6 +196,7 @@ static void ChassisModeSwitch(void)
         break;
     }
 }
+float debug_dpos = 0;
 /**
  * @brief       底盘期望转向模式切换
  * @retval      None
@@ -187,6 +212,15 @@ static void SteerRefModeGen(void)
         robot.steer_mode.ref = STEER_DEPART;
         return;
     }
+    if (!robot.comm.gimbal2chassis.gimbal_reset)
+    {
+        robot.steer_mode.ref = STEER_DEPART;
+        return;
+    }
+
+    // if(!robot.detect_states.gimbal_online){
+    //     robot.steer_mode.ref = STEER_DEPART;
+    // }
 
     if (robot.cmd.gimbal_reverse_seq != robot.comm.gimbal2chassis.reverse_finish_seq)
     {
@@ -215,7 +249,13 @@ static void SteerRefModeGen(void)
     }
     /* 当速度小于一定值时才生成期望转向模式 */
     float dpos = (robot.leg_states[LEFT].curr.state.dpos + robot.leg_states[RIGHT].curr.state.dpos) / 2.0;
-    if (dpos > kSteerSwitchSpeedThres)
+    debug_dpos = dpos;
+    if (fabs(dpos) > kSteerSwitchSpeedThres)
+    {
+        return;
+    }
+    float theta = (robot.leg_states[LEFT].curr.state.theta + robot.leg_states[RIGHT].curr.state.theta) / 2.0;
+    if (fabs(theta) > kSteerSwitchLegAngleThres)
     {
         return;
     }
@@ -223,6 +263,7 @@ static void SteerRefModeGen(void)
     robot.steer_mode.ref = robot.cmd.steer_mode_ref;
 }
 
+int test_flag = 0;
 /**
  * @brief   有关底盘转向模式的切换
  * @param   none
@@ -232,20 +273,18 @@ static void SteerRefModeGen(void)
 static void SteerModeSwitch(void)
 {
 
-    if (!robot.comm.gimbal2chassis.gimbal_reset)
-    {
-        robot.steer_mode.ref = STEER_DEPART;
-        return;
-    }
-
     if (robot.chassis_mode.curr != CHASSIS_MATURE)
     {
-        robot.steer_mode.ref = robot.steer_mode.curr = robot.steer_mode.last = STEER_DEPART;
+        test_flag = 1;
+        robot.steer_mode.last = robot.steer_mode.curr;
+        robot.steer_mode.ref = robot.steer_mode.curr =  STEER_DEPART;
+        
         return;
     }
 
     if (robot.steer_mode.curr == robot.steer_mode.ref)
     {
+        test_flag = 0;
         return;
     }
 
@@ -267,28 +306,43 @@ static void SteerModeSwitch(void)
             robot.steer_mode.last = robot.steer_mode.curr;
             robot.steer_mode.curr = STEER_GYRO;
             robot.cmd.gyro_cal_flag = false;
+            robot.cmd.gyro_dir = 0;
         }
         break;
     case STEER_MOVE:
         // 底盘临时切换，直接停
         if (robot.steer_mode.curr == STEER_GYRO)
         {
-            if (abs(robot.yaw_motor->angle()) < 0.6f)
+            if (fabsf(robot.chassis_states.yaw_omg) > kGyroSwitchSpeed)
+            {
+            }
+            else if (abs(robot.yaw_motor->angle()) < 0.6f)
             {
                 robot.chassis_states.yaw_ang = robot.yaw_motor->angle();
                 robot.chassis_states.yaw_omg = robot.imu_datas.euler_vals[YAW];
                 robot.cmd.yaw_ang = 0;
                 robot.steer_mode.last = robot.steer_mode.curr;
+                debug_num = 1;
                 robot.steer_mode.curr = STEER_MOVE;
             }
-            // else if(abs(robot.yaw_motor->angle()-PI)<0.6f||abs(robot.yaw_motor->angle()+PI)<0.6f){
-            //     robot.chassis_states.yaw_ang = robot.yaw_motor->angle();
-            //     robot.chassis_states.yaw_omg = robot.imu_datas.euler_vals[YAW];
-            //     robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
-            //     robot.steer_mode.last = robot.steer_mode.curr;
-            //     robot.steer_mode.curr = STEER_MOVE;
-            //     robot.cmd.gimbal_reverse_seq = true;
-            // }
+            else if (robot.yaw_motor->angle() > PI - 0.6f)
+            {
+                robot.chassis_states.yaw_ang = robot.yaw_motor->angle();
+                robot.chassis_states.yaw_omg = robot.imu_datas.euler_vals[YAW];
+                robot.cmd.yaw_ang = PI;
+                robot.steer_mode.last = robot.steer_mode.curr;
+                debug_num = 2;
+                robot.steer_mode.curr = STEER_MOVE;
+            }
+            else if (robot.yaw_motor->angle() < -PI + 0.6f)
+            {
+                robot.chassis_states.yaw_ang = robot.yaw_motor->angle();
+                robot.chassis_states.yaw_omg = robot.imu_datas.euler_vals[YAW];
+                robot.cmd.yaw_ang = PI;
+                robot.steer_mode.last = robot.steer_mode.curr;
+                debug_num = 3;
+                robot.steer_mode.curr = STEER_MOVE;
+            }
             else
             {
                 robot.steer_mode.curr = STEER_GYRO;
@@ -300,6 +354,7 @@ static void SteerModeSwitch(void)
         robot.chassis_states.yaw_omg = robot.imu_datas.euler_vals[YAW];
         robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
         robot.steer_mode.last = robot.steer_mode.curr;
+        debug_num = 4;
         robot.steer_mode.curr = STEER_MOVE;
         break;
     case STEER_DEFENSE:

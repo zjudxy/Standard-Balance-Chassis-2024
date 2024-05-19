@@ -86,6 +86,10 @@ typedef union _gimbal2chassis_u {
         uint8_t minipc_ok : 1;
 
         uint8_t reverse_finish_seq;
+
+        uint8_t target_x;
+        uint8_t target_y;
+        uint8_t target_state :2;
     }
     bits;
 } Gimbal2Chassis_u;
@@ -255,6 +259,9 @@ static void ChassisDecode(ChassisGimbalComm_t *comm, const uint8_t rx_data[8])
     comm->gimbal2chassis.gimbal_reset = (bool)g2c_msg.bits.gimbal_reset;
     comm->gimbal2chassis.reverse_finish_seq = g2c_msg.bits.reverse_finish_seq;
     comm->gimbal2chassis.minipc_ok = (bool)g2c_msg.bits.minipc_ok;
+    comm->gimbal2chassis.target_x = g2c_msg.bits.target_x;
+    comm->gimbal2chassis.target_y = g2c_msg.bits.target_y;
+    comm->gimbal2chassis.target_state = g2c_msg.bits.target_state;
 }
 
 /**
@@ -275,6 +282,9 @@ static void GimbalEncode(const ChassisGimbalComm_t *comm, uint8_t tx_data[8])
     g2c_msg.bits.gimbal_reset = comm->gimbal2chassis.gimbal_reset;
     g2c_msg.bits.reverse_finish_seq = comm->gimbal2chassis.reverse_finish_seq;
     g2c_msg.bits.minipc_ok = comm->gimbal2chassis.minipc_ok;
+    g2c_msg.bits.target_x = comm->gimbal2chassis.target_x;
+    g2c_msg.bits.target_y = comm->gimbal2chassis.target_y;
+    g2c_msg.bits.target_state = comm->gimbal2chassis.target_state;
 
     memcpy(tx_data + GIMBAL_TX_INDEX, g2c_msg.msg, 8 - GIMBAL_TX_INDEX);
 }

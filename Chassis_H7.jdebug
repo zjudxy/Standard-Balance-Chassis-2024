@@ -23,7 +23,7 @@ void OnProjectLoad (void) {
   // Dialog-generated settings
   //
   Project.SetDevice ("STM32H723VG");
-  Project.SetHostIF ("USB", "1044730352");
+  Project.SetHostIF ("USB", "69665271");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddPathSubstitute ("X:/Hello World/2024/Code/Chassis_H7", "$(ProjectDir)");

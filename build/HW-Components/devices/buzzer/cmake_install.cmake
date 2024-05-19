@@ -1,4 +1,4 @@
-# Install script for directory: X:/Hello World/2024/Code/Chassis_H7/HW-Components/devices/buzzer
+# Install script for directory: X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

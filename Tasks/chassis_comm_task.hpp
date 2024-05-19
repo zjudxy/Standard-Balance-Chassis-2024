@@ -31,7 +31,8 @@ extern "C" {
 /* Exported function prototypes ----------------------------------------------*/
 extern uint8_t referee_rx_data[255];
 extern uint8_t referee_tx_data[255];
-
+extern uint8_t dist_measure_rx_data_Front[1024];
+extern uint8_t dist_measure_rx_data_Back[1024];
 
 void CommInit(void);
 

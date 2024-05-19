@@ -31,6 +31,9 @@
 uint8_t referee_rx_data[255];
 uint8_t referee_tx_data[255];
 
+uint8_t dist_measure_rx_data_Front[1024];
+uint8_t dist_measure_rx_data_Back[1024];
+
 static void SendCanMsg(void);
 
 static inline void InfantryTypeAnalysis(void);
@@ -44,6 +47,9 @@ static void UiTask(void);
 void CommInit()
 {
     HAL_UARTEx_ReceiveToIdle_DMA(&huart1, referee_rx_data, robot.referee_ptr->get_rx_dma_len());
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart7, dist_measure_rx_data_Front,1024);
+
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart10, dist_measure_rx_data_Back,1024);
 }
 hello_world::referee::RobotPerformancePackage::Data robot_performance_data;
 hello_world::referee::RobotShooterPackage::Data robot_shoot_data;
@@ -52,6 +58,10 @@ hello_world::referee::RobotPowerHeatPackage::Data robot_power_heat_data;
 void CommTask(void)
 {
     HAL_UARTEx_ReceiveToIdle_DMA(&huart1, referee_rx_data, robot.referee_ptr->get_rx_dma_len());
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart7, dist_measure_rx_data_Front,1024);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart10, dist_measure_rx_data_Back,1024);
+
+    HAL_UART_Receive_IT(&huart7, dist_measure_rx_data_Front,1);
     SendCanMsg();
     robot_performance_data = robot.referee_ptr->PERFORMANCE->getData();
     robot_shoot_data = robot.referee_ptr->SHOOTER->getData();
@@ -107,6 +117,11 @@ static void SendCanMsg(void)
     robot.chassis_motors[RFM]->encode(tx_msg, tx_id);
     robot.chassis_motors[RBM]->encode(tx_msg, tx_id);
     FDCAN_Send_Msg(&hfdcan1, tx_msg, tx_id, 8);
+
+    // memset(tx_msg, 0, 8);
+    // tx_id = robot.yaw_motor->tx_id();
+    // robot.yaw_motor->encode(tx_msg, tx_id);
+    // FDCAN_Send_Msg(&hfdcan2, tx_msg, tx_id, 8);
 }
 
 static void GetJudge2GimbalInfo(void)
@@ -131,6 +146,7 @@ static void GetJudge2GimbalInfo(void)
         robot.comm.judge2gimbal.bullet_speed = -1;
     }
 
+    
 
     // if (robot.comm.judge2gimbal.bullet_speed == 0 )
     // {
@@ -198,6 +214,7 @@ static void GetChassis2GimbalCmd(void)
     robot.comm.chassis2gimbal.gimbal_enable = robot.cmd.gimbal_enable;
     robot.comm.chassis2gimbal.ignore_overheated = robot.cmd.ignore_overheated;
     robot.comm.chassis2gimbal.shooter_enable = robot.cmd.shooter_enable;
+    
     robot.comm.chassis2gimbal.reverse_seq = robot.cmd.gimbal_reverse_seq;
     robot.comm.chassis2gimbal.auto_shoot = robot.cmd.auto_shoot;
 

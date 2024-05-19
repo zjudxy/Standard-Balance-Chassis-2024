@@ -20,25 +20,40 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 
-static const float kOffGroundTimeThres = 0.010f;  // unit: s
+static const float kOffGroundTimeThres = 0.03f;  // unit: s
 static const float kOnGroundThres = 0.8f;
-static const float kOnGroundTimeThres = 0.1f;  // unit: s
+static const float kOnGroundTimeThres = 0.02f;  // unit: s
 
 // static const float kAbnormalTimeThres = 0.15f;     // unit: s
 // static const float kThetaAbnormalThres = 0.65f;  // unit: rad
 // static const float kDThetaAbnormalThres = 5.0f;    // unit: rad/s
 // static const float kPhiAbnormalThres = 0.37f;      // unit: rad
 // static const float kDPhiAbnormalThres = 2.0f;      // unit: rad/s
-static const float kWheelAbnormalThres = 65.0f;      // unit: rad/s
+static const float kWheelAbnormalThres = 8.0f;      // unit: m/s
 
 
-static const float kAbnormalTimeThres = 0.15f;     // unit: s
-static const float kThetaAbnormalThres = D2R(45);  // unit: rad
-static const float kDThetaAbnormalThres = 5.0f;    // unit: rad/s
-static const float kPhiAbnormalThres = 0.37f;      // unit: rad
+static const float kAbnormalTime1Thres = 0.20f;     // unit: s
+static const float kAbnormalTime2Thres = 0.2f;     // unit: s
+
+
+#if defined(WHEEL_MOTOR_3508_120mm)
+static const float kThetaAbnormalThres = D2R(42.0f);  // unit: rad
+#elif defined(WHEEL_MOTOR_8910_200mm)
+static const float kThetaAbnormalThres = D2R(50.0f);  // unit: rad
+#elif defined(WHEEL_MOTOR_8910_150mm)
+static const float kThetaAbnormalThres = D2R(50.0f);  // unit: rad
+#endif
+
+
+
+// static const float kThetaAbnormalThres = D2R(50.0f);  // unit: rad
+static const float kDThetaAbnormalThres = 20.0f;    // unit: rad/s
+static const float kPhiAbnormalThres = 0.39f;      // unit: m
 static const float kDPhiAbnormalThres = 2.0f;      // unit: rad/s
 
-static const float kClose2ObsDistThres = 0.40f;  // unit: m
+static const float kClose2ObsDistThres = 0.38f;  // unit: m
+static const float kDisemeasure2ArmorDis = 0.23f;  // unit: m
+static const float kClose2ObsTimeThres = 0.020f;  // unit: s
 
 static const float kLowBatteryPctThres = 0.2f;
 static const float kLowBatteryPctTimeThres = 0.05f;  // unit: s

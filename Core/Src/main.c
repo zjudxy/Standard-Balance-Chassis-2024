@@ -28,7 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "chassis_task.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,10 +109,12 @@ int main(void)
   MX_TIM12_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
+  MX_UART7_Init();
+  MX_USART10_UART_Init();
   /* USER CODE BEGIN 2 */
   ChassisInit();
   /* USER CODE END 2 */
-
+  // __HAL_DBGMCU_FREEZE_IWDG1();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

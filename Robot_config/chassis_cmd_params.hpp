@@ -22,10 +22,10 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
-static const float kMaxGyroSpeed = 8.0f;  // unit: rad/s
+static const float kMaxGyroSpeed = 9.0f;  // unit: rad/s
 static const float kMinGyroSpeed = 6.0f;   // unit: rad/s
 
-static const float kMaxGyroAcc = 4.0f;     // unit: rad/s^2
+static const float kMaxGyroAcc = 5.0f;     // unit: rad/s^2
 static const float kMaxGyroForwardAcc = 1.0f;
 static const float kTurnScale = 0.003f;
 static float kMoveScaleCoff;
@@ -39,7 +39,7 @@ static const float kMouseMoveLim = 50.0f;
 
 static const float kHeightAdjDiff = 0.1f;  // unit: m/s
 
-static const float kMaxRotSpeed = 6.0f;  // unit: rad/s
+static const float kMaxRotSpeed = 4.0f;  // unit: rad/s
 
 static const float kYawAngRefMaxBias = D2R(70);  // unit: rad
 

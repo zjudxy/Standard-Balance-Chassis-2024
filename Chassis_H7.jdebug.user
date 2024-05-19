@@ -1,32 +1,42 @@
 
-GraphedExpression="robot.comm.gimbal2chassis.gimbal_reset", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a00909
-OpenDocument="arm_atan2_f32.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/HW-Components/Third_Party/Dsp/CMSIS-DSP-1.14.2/Source/FastMathFunctions/arm_atan2_f32.c", Line=88
+GraphedExpression="leg_force[0]", Color=#a00909
+GraphedExpression="leg_force[1]", Color=#09a01b
+GraphedExpression="debug_x[0]", Color=#09a087
+GraphedExpression="debug_x[1]", Color=#0984a0
+GraphedExpression="((((robot).leg_states[0]).curr).state).height", Color=#0964a0
 OpenDocument="main.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Core/Src/main.c", Line=65
-OpenDocument="super_capacity.hpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/super_capacity.hpp", Line=29
-OpenDocument="stm32h7xx_hal_spi.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c", Line=1241
-OpenDocument="HW_fdcan.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/HW_fdcan.cpp", Line=88
-OpenDocument="chassis_ctrl_params.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Robot_config/chassis_ctrl_params.cpp", Line=69
-OpenDocument="chassis_ctrl_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_ctrl_task.cpp", Line=12
-OpenDocument="stm32h7xx_it.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Core/Src/stm32h7xx_it.c", Line=93
-OpenDocument="chassis.hpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/chassis.hpp", Line=211
+OpenDocument="HW_fdcan.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/HW_fdcan.cpp", Line=118
+OpenDocument="chassis_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_task.cpp", Line=43
+OpenDocument="stm32h7xx_hal_fdcan.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_fdcan.c", Line=3032
+OpenDocument="stm32h7xx_hal.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c", Line=409
 OpenDocument="startup_stm32h723vgtx.s", FilePath="X:/Hello World/2024/Code/Chassis_H7/Core/Startup/startup_stm32h723vgtx.s", Line=54
-OpenDocument="stm32h7xx_hal.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c", Line=334
-OpenDocument="chassis_cmd_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_cmd_task.cpp", Line=85
+OpenDocument="super_capacity.hpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/super_capacity.hpp", Line=29
+OpenDocument="stm32h7xx_hal_spi.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c", Line=1413
+OpenDocument="stm32h7xx_it.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/Core/Src/stm32h7xx_it.c", Line=97
+OpenDocument="chassis_cmd_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_cmd_task.cpp", Line=1083
+OpenDocument="chassis_ctrl_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_ctrl_task.cpp", Line=1603
+OpenDocument="chassis_sense_task.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Tasks/chassis_sense_task.cpp", Line=97
+OpenDocument="chassis.hpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Resources/chassis.hpp", Line=211
+OpenDocument="arm_atan2_f32.c", FilePath="X:/Hello World/2024/Code/Chassis_H7/HW-Components/Third_Party/Dsp/CMSIS-DSP-1.14.2/Source/FastMathFunctions/arm_atan2_f32.c", Line=88
+OpenDocument="chassis_params.hpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Robot_config/chassis_params.hpp", Line=36
+OpenDocument="chassis_ctrl_params.cpp", FilePath="X:/Hello World/2024/Code/Chassis_H7/Robot_config/chassis_ctrl_params.cpp", Line=69
 OpenToolbar="Debug", Floating=0, x=0, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=1084, h=409, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Watched Data 1", DockArea=BOTTOM, x=1, y=0, w=1681, h=895, TabPos=1, TopOfStack=1, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Functions", DockArea=LEFT, x=0, y=1, w=1084, h=383, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=1681, h=895, TabPos=0, TopOfStack=0, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
-OpenWindow="Timeline", DockArea=BOTTOM, x=0, y=0, w=1390, h=919, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="1 s / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=0, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="514;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="1095;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="1118;0"
-TableHeader="Data Sampling Table", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" robot.comm.gimbal2chassis.gimbal_reset"], ColWidths=[100;100;100]
-TableHeader="Data Sampling Setup", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[525;100;105;100;100;127;149;171;171]
-TableHeader="Functions", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Class";"Source"], ColWidths=[3958;131;100;116;1147;487]
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=1084, h=442, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Watched Data 1", DockArea=BOTTOM, x=1, y=0, w=1487, h=960, TabPos=1, TopOfStack=0, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Functions", DockArea=LEFT, x=0, y=1, w=1084, h=285, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=1487, h=960, TabPos=0, TopOfStack=1, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
+OpenWindow="Timeline", DockArea=BOTTOM, x=0, y=0, w=1584, h=984, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="1 s / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="39;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="1290;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="1313;0"
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh";"Access"], ColWidths=[462;233;264;528;100]
+TableHeader="Functions", SortCol="Name", SortOrder="DESCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Class";"Source"], ColWidths=[3958;131;100;116;1147;487]
 TableHeader="Source Files", SortCol="File", SortOrder="DESCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[295;116;100;116;1653]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
-TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh";"Access"], ColWidths=[462;233;264;722;100]
+TableHeader="Data Sampling Table", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time"], ColWidths=[100;100]
+TableHeader="Data Sampling Setup", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[422;100;209;209;196;209;149;209;196]
 TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;100;172;1168]
 WatchedExpression="curr_rc_ptr", Window=Watched Data 1
 WatchedExpression="robot.sup_cap", Window=Watched Data 1
-WatchedExpression="motorangle", Window=Watched Data 1
+WatchedExpression="motorangle", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="robot.yaw_motor", Window=Watched Data 1
+WatchedExpression="robot", Window=Watched Data 1
+WatchedExpression="acc_data", RefreshRate=2, Window=Watched Data 1

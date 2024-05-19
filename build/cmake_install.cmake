@@ -1,4 +1,4 @@
-# Install script for directory: X:/Hello World/2024/Code/Chassis_H7
+# Install script for directory: X:/Hello World/2024/Code/Standard-Balance-Chassis-2024
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("X:/Hello World/2024/Code/Chassis_H7/build/HW-Components/cmake_install.cmake")
+  include("X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "X:/Hello World/2024/Code/Chassis_H7/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

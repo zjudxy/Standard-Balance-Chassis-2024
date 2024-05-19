@@ -29,10 +29,10 @@ extern "C" {
 
 #define JUDGE_TX_ID 0x1FD    // 裁判系统数据帧的ID
 #define JUDGE_TX_INDEX 0     // 裁判系统数据在数据中的起始位置
-#define CHASSIS_TX_ID 0x1FE  // 底盘控制数据帧的ID
+#define CHASSIS_TX_ID 0x1AB  // 底盘控制数据帧的ID
 #define CHASSIS_TX_INDEX 0   // 底盘控制数据在数据中的起始位置
-#define GIMBAL_TX_ID 0x1FF   // 云台反馈数据帧的ID
-#define GIMBAL_TX_INDEX 4    // 云台反馈数据在数据中的起始位置
+#define GIMBAL_TX_ID 0x1AC   // 云台反馈数据帧的ID
+#define GIMBAL_TX_INDEX 0    // 云台反馈数据在数据中的起始位置
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 
@@ -93,6 +93,13 @@ typedef enum _target_e {
     BASE = 0x01 << 7,        // 基地
 } Target_e;
 
+
+typedef enum TargetState{
+    kTargetStateLost=0u,
+    kTargetStateDetected=1u,
+    kTargetStateAimed=2u,
+}TargetState_e;
+
 /* 底盘云台通信 */
 typedef struct _chassis_gimbal_comm_t ChassisGimbalComm_t;
 struct _chassis_gimbal_comm_t {
@@ -134,6 +141,10 @@ struct _chassis_gimbal_comm_t {
         uint8_t reverse_finish_seq;  // 云台反向完成次序
         Target_e target_list;        // 识别目标
         uint8_t aimed_enemy_id;      // 自瞄目标序号
+        uint8_t target_x;            // 目标x坐标
+        uint8_t target_y;            // 目标y坐标
+        uint8_t target_state;        // 目标状态
+
     } gimbal2chassis;                // 云台反馈数据
 
     /**

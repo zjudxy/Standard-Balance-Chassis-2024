@@ -24,8 +24,13 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
-static const float kSteerSwitchSpeedThres = 0.3f;   // unit: m/s
+static const float kSteerSwitchSpeedThres = 1.0f;   // unit: m/s
 static const float kSteerSwitchYawOmgThres = 6.0f;  // unit: rad/s
+
+static const float kGyroSwitchomg = 4.0f;  // unit: rad/s^2
+static const float kGyroSwitchSpeed= 7.0f;  // unit: rad/s
+
+static const float kSteerSwitchLegAngleThres =0.5f;  // unit: rad
 
 static const float kPowerOnDelay = 3.0f;  // unit: s
 /* Exported types ------------------------------------------------------------*/

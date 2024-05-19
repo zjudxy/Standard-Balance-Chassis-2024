@@ -22,7 +22,9 @@
 #include "HW_fdcan.hpp"
 #include "buzzer.hpp"
 #include "td.hpp"
+#include "chassis_task.hpp"
 #include "chassis_cmd_task.hpp"
+#include "chassis_sense_task.hpp"
 /* Private macro -------------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /* Private types -------------------------------------------------------------*/
@@ -39,15 +41,18 @@ typedef struct _leg_len_ctrl_t
 } LegLenCtrl_t;
 /* Private variables ---------------------------------------------------------*/
 namespace TD = hello_world::filter;
-pid::MultiNodesPid *jointpid_ptr[4] = {nullptr, nullptr, nullptr, nullptr};          // 关节pid控制
+pid::MultiNodesPid *jointpid_ptr[4] = {nullptr, nullptr, nullptr, nullptr};     // 关节pid控制
 pid::BasicPid *joint_confirm_pid_ptr[4] = {nullptr, nullptr, nullptr, nullptr}; // 关节确定零位pid控制
 pid::BasicPid *Wheelpid_ptr[2] = {nullptr, nullptr};                            // 轮电机速度闭环pid控制
-pid::BasicPid *WheelSlippid_ptr[2] = {nullptr, nullptr};                    // 轮电机打滑pid控制
-pid::MultiNodesPid *WheelRecoverypid_ptr[2] = {nullptr, nullptr};                    // 轮电机起身pid控制
+pid::BasicPid *WheelSlippid_ptr[2] = {nullptr, nullptr};                        // 轮电机打滑pid控制
+pid::MultiNodesPid *WheelRecoverypid_ptr[2] = {nullptr, nullptr};               // 轮电机起身pid控制
 pid::BasicPid *leg_ang_pid_ptr = nullptr;                                       // 腿摆角pid控制
-pid::MultiNodesPid *yaw_tq_pid_ptr = nullptr;                                        // 转向力矩pid控制
-pid::BasicPid *roll_pid_ptr = nullptr;                                          // roll力矩控制
-pid::MultiNodesPid *yaw_motor_pid_ptr = nullptr;                                     // 临时yaw轴pid控制
+pid::MultiNodesPid *yaw_tq_pid_ptr = nullptr;                                   // 转向力矩pid控制
+
+
+// pid::BasicPid *yaw_tq_pid_ptr = nullptr;                                        // 转向力矩pid控制
+pid::BasicPid *roll_pid_ptr = nullptr;           // roll力矩控制
+pid::MultiNodesPid *yaw_motor_pid_ptr = nullptr; // 临时yaw轴pid控制
 TD::Td *joint_motor_td[4] = {nullptr};
 // pid::MultiNodesPid* leg_ang_pid=nullptr;
 static float mature_lqr[2][2][6];
@@ -109,6 +114,8 @@ void JointVelFilter(void);
 
 void YawMotorContorller(void);
 
+float CalTurnTorDiff(void);
+
 /**
  * @brief       init control task
  * @retval      None
@@ -145,10 +152,10 @@ void CtrlInit(void)
     leg_ang_pid_ptr = new pid::BasicPid(kLegAngPidParams);
     // // PidInit(&yaw_tq_pid, 2, kYawTqPidParams);
     yaw_tq_pid_ptr = new pid::MultiNodesPid(pid::MultiNodesPidType::kMultiNodesPidTypeCascade, pid::OutLimit(true, -8.0f, 8.0f),
-    pid::MultiNodesPid::ParamsList (kYawTqPidParams,kYawTqPidParams+2));
+                                            pid::MultiNodesPid::ParamsList(kYawTqPidParams, kYawTqPidParams + 2));
+    // yaw_tq_pid_ptr = new pid::BasicPid(kYawTqPidParams);
     // // PidInit(&roll_pid, 1, &kRollPidParams);
     roll_pid_ptr = new pid::BasicPid(kRollPidParams);
-
 
     for (uint8_t i = 0; i < 2; i++)
     {
@@ -168,6 +175,8 @@ float test_id = 0.0f;
 float type = 0;
 float test_v1, test_v2 = 0.0f;
 float motorangle[6] = {0};
+float motorvel[6] = {0};
+float yaw_motor_angle = 0.0f;
 float32_t input_tor[6] = {0};
 /**
  * @brief       task to control chassis
@@ -182,6 +191,9 @@ void CtrlTask(void)
     ChassisModeChangeHandle();
 
     JointVelFilter();
+
+    memset(StateSpaceModelU, 0, 2 * 2 * sizeof(float));
+
     switch (robot.chassis_mode.curr)
     {
     case CHASSIS_INIT:
@@ -215,8 +227,10 @@ void CtrlTask(void)
     {
         motorangle[i] = robot.chassis_motors[i]->angle();
         input_tor[i] = robot.chassis_motor_torques[i];
+        motorvel[i] = robot.chassis_motor_vel[i];
         test_angle1 = robot.yaw_motor->angle();
     }
+
     // robot.chassis_motor_torques[LBM]=robot.chassis_motor_torques[LFM]=0.0f;
     // robot.chassis_motor_torques[LWM]=0.0f;
     // robot.chassis_motor_torques[RWM]=0.3f;
@@ -224,6 +238,7 @@ void CtrlTask(void)
 #ifndef TEST_MODE
     ChassisMotorAction();
 #endif
+    StateEstimate();
 }
 
 static void ClearAllMotors()
@@ -238,14 +253,14 @@ static void ClearAllMotors()
     // robot.yaw_motor_input = 0;
     // test_motor_ptr->setInput(0);
 }
-float32_t wheel_input_f[2]={0,0};
+float32_t wheel_input_f[2] = {0, 0};
 /**
  * @brief       set all motors' torque
  * @retval      None
  * @note
  */
 static void ChassisMotorAction(void)
-{   
+{
     for (uint8_t i = 0; i < MOTOR_NUM; i++)
     {
         robot.chassis_motors[i]->setInput(robot.chassis_motor_torques[i]);
@@ -263,6 +278,7 @@ static void InitController(void)
     {
         // 关节电机上电
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, GPIO_PIN_SET);
+        robot.joint_ang_cal_flag = false;
         robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_DEAD;
         robot.chassis_mode.last = CHASSIS_INIT;
         robot.steer_mode.ref = robot.steer_mode.curr = robot.steer_mode.last = STEER_DEPART;
@@ -299,7 +315,7 @@ static void ChassisModeChangeHandle(void)
         return;
     }
 
-    if(robot.chassis_mode.curr!=CHASSIS_INIT)
+    if (robot.chassis_mode.curr != CHASSIS_INIT)
     {
         robot.mature_tick = 0;
     }
@@ -381,12 +397,13 @@ static void ConfirmController(void)
     case CONFIRM_SATTE_INIT:
         ConfirmPidReset();
         memset(stop_time, 0, 4 * sizeof(uint16_t));
-        if(confirm_finish_flag)
+        if (confirm_finish_flag)
         {
             robot.mode_state.confirm = CONFIRM_STATE_RETURN;
         }
         else
-        {robot.mode_state.confirm = CONFIRM_SATTE_RESET;
+        {
+            robot.mode_state.confirm = CONFIRM_SATTE_RESET;
         }
     case CONFIRM_SATTE_RESET:
         robot.mode_state.confirm = CONFIRM_SATTE_CAL_BIAS;
@@ -430,6 +447,7 @@ static void ConfirmController(void)
             {
                 robot.chassis_motors[i]->setAngleValue(kMechanicalLimAng[i]);
             }
+            robot.joint_ang_cal_flag = true;
             confirm_finish_flag = true;
             memset(stop_time, 0, 4 * sizeof(uint16_t));
             robot.mode_state.confirm = CONFIRM_STATE_RETURN;
@@ -453,6 +471,7 @@ static void ConfirmController(void)
 
             robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_MATURE;
             // robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_RECOVERY;
+            debug_num = 5;
             robot.steer_mode.ref = robot.steer_mode.curr = STEER_MOVE;
             robot.steer_mode.last = STEER_DEPART;
             // robot.steer_mode.ref = robot.steer_mode.curr = STEER_DEPART;
@@ -464,6 +483,10 @@ static void ConfirmController(void)
 }
 
 float roll_df = 0, dtq = 0;
+float mature_dpos = 0;
+float rotate_pos = 0;
+float last_rotate_pos = 0;
+float rotate_dpos = 0;
 /**
  * @brief       正常运行模式
  * @retval      None
@@ -471,7 +494,9 @@ float roll_df = 0, dtq = 0;
  */
 static void MatureController(void)
 {
-
+    float diff_pos = 0;
+    static int abnormal_warn_flag = 0;
+    float rotate_height = 0.0f; // 旋转降低腿长
     switch (robot.mode_state.mature)
     {
     case MATURE_STATE_INIT:
@@ -479,13 +504,17 @@ static void MatureController(void)
         // YawTqPidReset();
         // RollPidReset();
         // LegLenPidReset();
-        // JointPidReset();
+        JointPidReset();
         LegAngPidReset();
         YawTqPidReset();
         RollPidReset();
         robot.mature_tick = 0;
         robot.cmd.sup_cap_on = true;
-        if(robot.steer_mode.curr==STEER_MOVE)
+        rotate_dpos = 0;
+        rotate_pos = 0;
+        last_rotate_pos = 0;
+        abnormal_warn_flag = 0;
+        if (robot.steer_mode.curr == STEER_MOVE)
         {
             robot.cmd.yaw_ang = robot.yaw_motor->angle();
         }
@@ -499,22 +528,30 @@ static void MatureController(void)
         //     joint_confirm_pid_ptr[i]->calc(&ref, &fdb, nullptr, &output);
         //     robot.chassis_motor_torques[i] = output;
         // }
-
-        robot.cmd.height_f = LimDiff(robot.cmd.height, robot.cmd.height_f, kMaxDH);
+        if (fabs(robot.chassis_states.yaw_omg) > 3.0f && robot.steer_mode.curr != STEER_GYRO)
+        {
+            rotate_height = (fabs(robot.chassis_states.yaw_omg * robot.chassis_states.dpos)) * 0.15f;
+        }
+        robot.cmd.height_f = LimDiff(robot.cmd.height - rotate_height, robot.cmd.height_f, kMaxDH);
         robot.cmd.pitch_ang = LimDiff(0, robot.cmd.pitch_ang, kPitchMaxDAng);
+        robot.cmd.air_height_diff = LimDiff(0, robot.cmd.air_height_diff, kMaxDH);
         // robot.cmd.pitch_ang = 0;
         robot.leg_states[LEFT].ref.state.phi = robot.leg_states[RIGHT].ref.state.phi = robot.cmd.pitch_ang;
         // robot.cmd.pitch_ang;
 
-        robot.leg_states[LEFT].ref.state.height = robot.cmd.height_f / cos(robot.leg_states[LEFT].curr.state.theta);
-        robot.leg_states[RIGHT].ref.state.height = robot.cmd.height_f / cos(robot.leg_states[RIGHT].curr.state.theta);
+        robot.leg_states[LEFT].ref.state.height = (robot.cmd.height_f) / cos(robot.leg_states[LEFT].curr.state.theta);
+        robot.leg_states[RIGHT].ref.state.height = (robot.cmd.height_f) / cos(robot.leg_states[RIGHT].curr.state.theta);
         // robot.leg_states[LEFT].ref.state.height = robot.cmd.height_f;
         // robot.leg_states[RIGHT].ref.state.height = robot.cmd.height_f;
         LIMIT_MAX(robot.leg_states[LEFT].ref.state.height, kHeightMax, kHeightMin);
         LIMIT_MAX(robot.leg_states[RIGHT].ref.state.height, kHeightMax, kHeightMin);
 
-        float dpos = GetLimitedSpeed(robot.cmd.dpos);
+        // robot.cmd.dpos_f = LimDiff(robot.cmd.dpos, robot.cmd.dpos_f, kMaxDDPos);
+        robot.cmd.dpos_f = robot.cmd.dpos;
+        float dpos = GetLimitedSpeed(robot.cmd.dpos_f);
+        mature_dpos = dpos;
         // float dpos = robot.cmd.dpos;
+
         float diff_pos =
             (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 + dpos * kCtrlPeriod -
             (robot.leg_states[LEFT].curr.state.pos + robot.leg_states[RIGHT].curr.state.pos) / 2;
@@ -523,8 +560,34 @@ static void MatureController(void)
             robot.leg_states[LEFT].ref.state.pos += dpos * kCtrlPeriod;
             robot.leg_states[RIGHT].ref.state.pos += dpos * kCtrlPeriod;
         }
+
+        if (robot.detect_states.abnormal && robot.detect_states.abnormal_type == Abnormal_warn && robot.mature_tick > 1000)
+        {
+            JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
+            if (!abnormal_warn_flag)
+            {
+                abnormal_warn_flag = 1;
+                for (int i = 0; i < 2; i++)
+                {
+                    robot.leg_states[i].ref.state.pos = hello_world::Bound(robot.leg_states[i].curr.state.pos,
+                                                                           robot.leg_states[i].curr.state.pos + kAbnormalPosBias, robot.leg_states[i].curr.state.pos - kAbnormalPosBias);
+                }
+            }
+        }
+        else
+        {
+            abnormal_warn_flag = 0;
+        }
+
+        // 计算旋转导致的位置差
+
+        // robot.leg_states[LEFT].ref.state.pos -= rotate_pos-last_rotate_pos;
+        // robot.leg_states[RIGHT].ref.state.pos += rotate_pos-last_rotate_pos;
         // JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
+
         CalLqrMat();
+        // CalTurnTorDiff();
+
         float leg_ang_fdb;
         float leg_push_force[2] = {0, 0};
         float leg_tq[2] = {0, 0};
@@ -541,6 +604,24 @@ static void MatureController(void)
         leg_push_force[1] = -roll_df;
         test_force[0] = roll_df;
         test_force[1] = dtq;
+
+        float rot_dpos = robot.chassis_states.yaw_omg * kWheelBase / 2;
+        // if(fabs(-robot.cmd.yaw_ang+robot.chassis_states.yaw_ang)<D2R(5.0f))
+        // {
+        //     rotate_pos = hello_world::HandleAngleCross0Rad(-robot.cmd.yaw_ang+robot.chassis_states.yaw_ang,0)*kWheelBase/2*3.0f;
+        // }
+        // else {
+        //     rotate_pos = SIGN(-robot.cmd.yaw_ang+robot.chassis_states.yaw_ang)*kRotPosMaxBias;
+        // }
+        // rotate_pos = hello_world::HandleAngleCross0Rad(-robot.cmd.yaw_ang+robot.chassis_states.yaw_ang,0)*kWheelBase/2*5.0f;
+        // rotate_pos = hello_world::Bound(rotate_pos, -kRotPosMaxBias, kRotPosMaxBias);
+        // rotate_pos = 0.0f;
+        // rot_dpos = 0.0f;
+        // robot.leg_states[LEFT].ref.state.pos -= rotate_pos;
+        // robot.leg_states[RIGHT].ref.state.pos += rotate_pos;
+        // robot.leg_states[LEFT].curr.state.dpos += rot_dpos;
+        // robot.leg_states[RIGHT].curr.state.dpos -= rot_dpos;
+
         /* get motor output torque in virtual leg model*/
         for (uint8_t i = 0; i < 2; i++)
         {
@@ -552,6 +633,8 @@ static void MatureController(void)
                     mature_lqr[i][1][j] * (robot.leg_states[i].ref.data[j] - robot.leg_states[i].curr.data[j]) / 2;
             }
 
+            robot.chassis_motor_torques[W_INDEX(i)] += hello_world::Bound((robot.leg_states_estimate[i].state.dtheta - robot.leg_states[i].curr.state.dtheta) * kSlipWheelTorCoff, -kSlipWheelTorLimit, kSlipWheelTorLimit);
+            leg_tq[i] -= hello_world::Bound((robot.leg_states_estimate[i].state.dtheta - robot.leg_states[i].curr.state.dtheta) * kSlipWheelTorCoff, -kSlipWheelTorLimit, kSlipWheelTorLimit);
             /* perform virtual leg length control */
             leg_push_force[i] += LegLenCtrlCal(
                 leg_len_ctrls + i, robot.leg_states[i].ref.state.height, robot.leg_states[i].curr.state.height,
@@ -560,18 +643,38 @@ static void MatureController(void)
             {
                 test_force[2] = leg_push_force[i] - test_force[0];
             }
-            leg_push_force[i] += kBodyMass * kGravAcc * cos(robot.leg_states[i].curr.state.theta) / 2;
+            if (!robot.detect_states.abnormal)
+            {
+                leg_push_force[i] += kBodyMass * kGravAcc * cos(robot.leg_states[i].curr.state.theta) / 2;
+            }
 
             /* convert operation space to joint space */
             robot.five_rods_cal.opSp2JointSp(&robot.five_rods_cal, &front_tq, &behind_tq, leg_push_force[i], leg_tq[i],
                                              robot.chassis_motors[FJ_INDEX(i)]->angle(), robot.chassis_motors[BJ_INDEX(i)]->angle());
             robot.chassis_motor_torques[FJ_INDEX(i)] += front_tq;
             robot.chassis_motor_torques[BJ_INDEX(i)] += behind_tq;
+            StateSpaceModelU[i][0] = leg_tq[i];
+            StateSpaceModelU[i][1] = robot.chassis_motor_torques[W_INDEX(i)];
+            // if (robot.leg_states[i].curr.state.height < 0.11f)
+            // {
+            //     robot.chassis_motor_torques[FJ_INDEX(i)] += 1.5f;
+            //     robot.chassis_motor_torques[BJ_INDEX(i)] -= 1.5f;
+            // }
         }
-        // printf("wheel  tor:%.3f",robot.chassis_motor_torques[LWM]);
+        // robot.leg_states[LEFT].ref.state.pos += rotate_pos;
+        // robot.leg_states[RIGHT].ref.state.pos -= rotate_pos;
+
+        // if(robot.detect_states.slip[0]||robot.detect_states.slip[1])
+        // {
+        // robot.chassis_motor_torques[LWM] += hello_world::Bound((robot.leg_states_estimate[LEFT].state.dtheta-robot.leg_states[LEFT].curr.state.dtheta)*kSlipWheelTorCoff,-kSlipWheelTorLimit,kSlipWheelTorLimit);
+        // robot.chassis_motor_torques[RWM] += hello_world::Bound((robot.leg_states_estimate[RIGHT].state.dtheta-robot.leg_states[RIGHT].curr.state.dtheta)*kSlipWheelTorCoff,-kSlipWheelTorLimit,kSlipWheelTorLimit);
+        // }
+        // if(!robot.detect_states.abnormal&&!robot.detect_states.slip[0]&&!robot.detect_states.slip[1]){
         SteerControl();
+        // }
+
         // robot.chassis_motor_torques[LWM]=robot.chassis_motor_torques[RWM]=3.0f;
-        YawMotorContorller();
+        // YawMotorContorller();
         break;
     }
 }
@@ -586,12 +689,15 @@ static void RecoveryController(void)
     static uint32_t stable_time = 0;
     static uint32_t height_time = 0;
     static uint32_t extend_time = 0;
+    static uint32_t lock_time = 0;
     float tq;
     static bool leg_extend_flag = false; // 已伸长置1
     float32_t leg_extend_ang = PI / 2;
     static float32_t extend_ref[2] = {0, 0}; // 0 前轮 1 后轮
     static float32_t ref_ang[4];
     static float32_t fdb_ang = 0.0f;
+    static float recover_wheel_ref[2][2] = {{robot.chassis_motors[LWM]->angle(), 0},
+                                            {robot.chassis_motors[RWM]->angle(), 0}};
     /* ignore user cmd */
     memcpy(robot.leg_states[LEFT].ref.data, kRefState, STATE_NUM * sizeof(float));
     memcpy(robot.leg_states[RIGHT].ref.data, kRefState, STATE_NUM * sizeof(float));
@@ -607,16 +713,64 @@ static void RecoveryController(void)
         leg_extend_flag = true;
         robot.cmd.sup_cap_on = true;
         robot.mode_state.recovery = RECOVERY_STATE_RECOVERY;
-        if(robot.cmd.recovery_tune){
+        if (robot.cmd.recovery_tune)
+        {
             leg_extend_flag = false;
         }
+        if (robot.detect_states.abnormal)
+        {
+            robot.mode_state.recovery = RECOVERY_STATE_LOCK;
+        }
+
+        break;
+    case RECOVERY_STATE_LOCK:
+        if (fabsf(robot.leg_states[LEFT].curr.state.height - robot.leg_states[LEFT].ref.state.height) <
+                kRecoveryHeightThres &&
+            fabsf(robot.leg_states[RIGHT].curr.state.height - robot.leg_states[RIGHT].ref.state.height) <
+                kRecoveryHeightThres &&
+            fabsf(robot.leg_states[LEFT].curr.state.theta - robot.leg_states[LEFT].curr.state.phi) <
+                kRecoveryThetaThres &&
+            fabsf(robot.leg_states[RIGHT].curr.state.theta - robot.leg_states[RIGHT].curr.state.phi) <
+                kRecoveryThetaThres &&
+            fabsf(robot.chassis_motor_vel[LWM] * kWheelDiam) < kRecoveryDPosThres &&
+            fabsf(robot.chassis_motor_vel[RWM] * kWheelDiam) < kRecoveryDPosThres)
+        {
+            robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
+            lock_time++;
+        }
+        JointCtrlByPid(kHeightMin, PI / 2, 0);
+        for (uint8_t i = 0; i < 2; i++)
+        {
+            // wheel_pids[i].calcPid(wheel_pids + i, 0, &robot.leg_states[i].curr.state.dpos, &tq);
+            float ref = 0;
+            float fdb = robot.chassis_motor_vel[W_INDEX(i)];
+            Wheelpid_ptr[i]->calc(&ref, &fdb, nullptr, &tq);
+            robot.chassis_motor_torques[W_INDEX(i)] += tq;
+        }
+
+        if (lock_time * kCtrlPeriod > kRecoveryLockTimeThres)
+        {
+            lock_time = 0;
+            robot.mode_state.recovery = RECOVERY_STATE_RECOVERY;
+            for (int i = 0; i < 2; i++)
+            {
+                Wheelpid_ptr[i]->reset();
+            }
+        }
+
         break;
     case RECOVERY_STATE_RECOVERY:
         /* retract legs to minimum height for a certain time */
         if (fabsf(robot.leg_states[LEFT].curr.state.height - robot.leg_states[LEFT].ref.state.height) <
                 kRecoveryHeightThres &&
             fabsf(robot.leg_states[RIGHT].curr.state.height - robot.leg_states[RIGHT].ref.state.height) <
-                kRecoveryHeightThres)
+                kRecoveryHeightThres &&
+            fabsf(robot.leg_states[LEFT].curr.state.theta - robot.leg_states[LEFT].curr.state.phi) <
+                kRecoveryThetaThres &&
+            fabsf(robot.leg_states[RIGHT].curr.state.theta - robot.leg_states[RIGHT].curr.state.phi) <
+                kRecoveryThetaThres &&
+            fabsf(robot.leg_states[LEFT].curr.state.dpos) < kRecoveryDPosThres &&
+            fabsf(robot.leg_states[RIGHT].curr.state.dpos) < kRecoveryDPosThres)
         {
             robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
             height_time++;
@@ -625,8 +779,8 @@ static void RecoveryController(void)
         if (height_time * kCtrlPeriod > kRecoveryHeightTimeThres)
         {
             height_time = 0;
-            
-            if(!leg_extend_flag&&robot.cmd.recovery_tune)// 未伸长，先进入伸长模式
+
+            if (!leg_extend_flag && robot.cmd.recovery_tune) // 未伸长，先进入伸长模式
             {
                 extend_ref[0] = D2R(-10.0f);
                 extend_ref[1] = D2R(190.0f);
@@ -644,26 +798,25 @@ static void RecoveryController(void)
                     WheelRecoverypid_ptr[i]->reset();
                 }
             }
-            else{
+            else
+            {
                 robot.mode_state.recovery = RECOVERY_STATE_TUNE;
                 for (int i = 0; i < 2; i++)
                 {
                     Wheelpid_ptr[i]->reset();
                 }
-            
             }
         }
-        if (leg_extend_flag&&robot.cmd.recovery_tune) // 伸腿之后轮电机固定，腿收回将机器人前拉
-        {   float ref [2][2]= {{robot.chassis_motors[LWM]->angle(),0},
-        {robot.chassis_motors[RWM]->angle(),0}};
+        if (leg_extend_flag && robot.cmd.recovery_tune) // 伸腿之后轮电机固定，腿收回将机器人前拉
+        {
             for (uint8_t i = 0; i < 2; i++)
             {
                 // wheel_pids[i].calcPid(wheel_pids + i, 0, &robot.leg_states[i].curr.state.dpos, &tq);
                 float32_t fdb[2] = {robot.chassis_motors[W_INDEX(i)]->angle(), robot.chassis_motor_vel[W_INDEX(i)]};
-                WheelRecoverypid_ptr[i]->calc(ref[i], fdb, nullptr, &tq);
+                WheelRecoverypid_ptr[i]->calc(recover_wheel_ref[i], fdb, nullptr, &tq);
                 robot.chassis_motor_torques[W_INDEX(i)] += tq;
             }
-            JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
+            JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc / 2);
             // for (int i = 0; i < 4; i++)
             // {
 
@@ -677,11 +830,23 @@ static void RecoveryController(void)
         }
         else
         {
-            JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
-             for (uint8_t i = 0; i < 2; i++)
+            JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc / 2);
+
+            for (uint8_t i = 0; i < 2; i++)
             {
-                robot.chassis_motor_torques[W_INDEX(i)] = 0;
+                // wheel_pids[i].calcPid(wheel_pids + i, 0, &robot.leg_states[i].curr.state.dpos, &tq);
+                float ref = 0;
+                float fdb = robot.chassis_motor_vel[W_INDEX(i)];
+                Wheelpid_ptr[i]->calc(&ref, &fdb, nullptr, &tq);
+                robot.chassis_motor_torques[W_INDEX(i)] += tq;
             }
+            // for (uint8_t i = 0; i < 2; i++)
+            // {
+            //     // wheel_pids[i].calcPid(wheel_pids + i, 0, &robot.leg_states[i].curr.state.dpos, &tq);
+            //     float32_t fdb[2] = {robot.chassis_motors[W_INDEX(i)]->angle(), robot.chassis_motor_vel[W_INDEX(i)]};
+            //     WheelRecoverypid_ptr[i]->calc(recover_wheel_ref[i], fdb, nullptr, &tq);
+            //     robot.chassis_motor_torques[W_INDEX(i)] += tq;
+            // }
         }
         break;
     case RECOVERY_STATE_LEG_EXTEND:
@@ -725,36 +890,36 @@ static void RecoveryController(void)
                 ref_ang[i] = robot.chassis_motors[i]->angle();
             }
         }
-
         break;
     case RECOVERY_STATE_TUNE:
         // if (robot.cmd.recovery_tune)
         // {
-        //     float fdb = (robot.leg_states[LEFT].curr.state.dpos + robot.leg_states[RIGHT].curr.state.dpos) / 2;
+        // float fdb = (robot.leg_states[LEFT].curr.state.dpos + robot.leg_states[RIGHT].curr.state.dpos) / 2;
 
-        //     for (uint8_t i = 0; i < 2; i++)
-        //     {
-        //         // wheel_pids[i].calcPid(wheel_pids + i, robot.cmd.dpos, &fdb, &tq);
-        //         Wheelpid_ptr[i]->calc(&robot.cmd.dpos, &fdb, nullptr, &tq);
-        //         robot.chassis_motor_torques[W_INDEX(i)] += tq;
-        //     }
+        // for (uint8_t i = 0; i < 2; i++)
+        // {
+        //     // wheel_pids[i].calcPid(wheel_pids + i, robot.cmd.dpos, &fdb, &tq);
+        //     Wheelpid_ptr[i]->calc(&robot.cmd.dpos, &fdb, nullptr, &tq);
+        //     robot.chassis_motor_torques[W_INDEX(i)] += tq;
+        // }
 
-        //     JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
+        // JointCtrlByPid(kHeightMin, PI / 2, kBodyMass * kGravAcc);
 
-        //     SteerControl();
+        // SteerControl();
 
-        //     break;
+        // break;
         // }
         // else
         // {
-            robot.mode_state.recovery = RECOVERY_STATE_STABLE;
+        robot.mode_state.recovery = RECOVERY_STATE_STABLE;
         // }
     case RECOVERY_STATE_STABLE:
         for (uint8_t i = 0; i < 2; i++)
         {
             // wheel_pids[i].calcPid(wheel_pids + i, 0, &robot.leg_states[i].curr.state.dpos, &tq);
             float ref = 0;
-            Wheelpid_ptr[i]->calc(&ref, &robot.leg_states[i].curr.state.dpos, nullptr, &tq);
+            float fdb = robot.chassis_motor_vel[W_INDEX(i)];
+            Wheelpid_ptr[i]->calc(&ref, &fdb, nullptr, &tq);
             robot.chassis_motor_torques[W_INDEX(i)] += tq;
         }
 
@@ -776,7 +941,7 @@ static void RecoveryController(void)
         }
         break;
     case RECOVERY_STATE_RETURN:
-        robot.cmd.height = kHeightMin;
+        robot.cmd.height = kHeightMid;
         robot.cmd.height_f = kHeightMin;
         // robot.cmd.yaw_ang = robot.yaw_motor->angle();
         robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
@@ -785,15 +950,17 @@ static void RecoveryController(void)
 
         robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_MATURE;
         robot.chassis_mode.last = CHASSIS_RECOVERY;
+        debug_num = 6;
         robot.steer_mode.ref = robot.steer_mode.curr = STEER_MOVE;
         // robot.steer_mode.ref = robot.steer_mode.curr = STEER_DEPART;
         robot.steer_mode.last = STEER_DEPART;
-        robot.cmd.recovery_tune =false;
+        robot.cmd.recovery_tune = false;
         break;
     default:
         break;
     }
 }
+int fly_times = 0;
 /**
  * @brief       controller used at FLY mode
  * @retval      None
@@ -802,8 +969,14 @@ static void RecoveryController(void)
 static void FlyController(void)
 {
     float dtq = 0, fdb = 0;
-    float front_tq, behind_tq, leg_push_force, leg_tq[2] = {0, 0};
+    float front_tq = 0, behind_tq = 0, leg_push_force = 0, leg_tq[2] = {0, 0};
     float diff_pos;
+    float air_dpos = 0;
+    static float ground_height = 0;
+    float leg_ang_ref = 0;
+    static SteerMode_e last_steer_mode = STEER_DEPART;
+    static float leg_cmd_height_air[2] = {0};
+    static float last_height = kHeightMin;
     switch (robot.mode_state.fly)
     {
     case FLY_STATE_INIT:
@@ -811,7 +984,7 @@ static void FlyController(void)
         {
             leg_len_ctrls[i].iout = 0;
         }
-
+        robot.cmd.air_height_diff = 0;
         diff_pos =
             (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 -
             (robot.leg_states[LEFT].curr.state.pos + robot.leg_states[RIGHT].curr.state.pos) / 2;
@@ -819,10 +992,17 @@ static void FlyController(void)
         // robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = robot.cmd.dpos * 0.55f;
         robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = diff_pos;
         robot.leg_states[LEFT].curr.state.pos = robot.leg_states[RIGHT].curr.state.pos = 0;
-
+        air_dpos = (robot.leg_states[LEFT].curr.state.dpos + robot.leg_states[RIGHT].curr.state.dpos) / 2;
         robot.mode_state.fly = FLY_STATE_AIR;
+        fly_times++;
+        ground_height = robot.cmd.height_f;
+        last_steer_mode = robot.steer_mode.last;
+        for (int i = 0; i < 2; i++)
+        {
+            leg_cmd_height_air[i] = robot.leg_states[i].curr.state.height;
+        }
     case FLY_STATE_AIR:
-        if (robot.detect_states.on_ground)
+        if (robot.detect_states.on_ground[0] && robot.detect_states.on_ground[1])
         {
             robot.mode_state.fly = FLY_STATE_RETURN;
         }
@@ -830,32 +1010,94 @@ static void FlyController(void)
         robot.cmd.height_f += kAirDH * kCtrlPeriod;
         LIMIT_MAX(robot.cmd.height_f, kAirHeightMin, kAirHeightMax);
 
-        robot.leg_states[LEFT].ref.state.height = robot.cmd.height_f;
-        robot.leg_states[RIGHT].ref.state.height = robot.cmd.height_f;
-        LIMIT_MAX(robot.leg_states[LEFT].ref.state.height, kAirHeightMax, kAirHeightMin);
-        LIMIT_MAX(robot.leg_states[RIGHT].ref.state.height, kAirHeightMax, kAirHeightMin);
+        // robot.cmd.air_height_diff = LimDiff(sin(robot.imu_datas.euler_vals[ROLL]) * kWheelBase / 2.0f, robot.cmd.air_height_diff, kAirDH);
+        robot.cmd.air_height_diff = 0.0f;
+        LIMIT_MAX(robot.cmd.air_height_diff, kAirDiffHeight, -kAirDiffHeight);
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (robot.detect_states.on_ground[i])
+            {
+                leg_cmd_height_air[i] = LimDiff(kCmdHeightMin, leg_cmd_height_air[i], kMaxDH);
+            }
+            else
+            {
+                leg_cmd_height_air[i] = LimDiff(kAirHeightMax, leg_cmd_height_air[i], kAirDH);
+            }
+            robot.leg_states[i].ref.state.height = (leg_cmd_height_air[i] + robot.cmd.air_height_diff) / cos(robot.leg_states[i].curr.state.theta);
+            LIMIT_MAX(robot.leg_states[i].ref.state.height, kAirHeightMax + kAirDiffHeight, kAirHeightMin);
+        }
+
+        // for(uint8_t i=0;i<2;i++){
+        //     if(robot.detect_states.on_ground[i]){
+        //         robot.leg_states[i].ref.state.height = LimDiff(ground_height/cos(robot.leg_states[i].curr.state.theta), robot.leg_states[i].ref.state.height, kMaxDH);
+        //     }
 
         CalLqrMat();
 
         fdb = robot.leg_states[RIGHT].curr.state.theta - robot.leg_states[LEFT].curr.state.theta;
-        leg_ang_pid_ptr->calc(nullptr, &fdb, nullptr, &dtq);
+
+        leg_ang_pid_ptr->calc(&leg_ang_ref, &fdb, nullptr, &dtq);
 
         leg_tq[0] = -dtq;
         leg_tq[1] = dtq;
         /* only control theta and dtheta */
+        // 悬空腿只控制腿的摆角
         for (uint8_t i = 0; i < 2; i++)
         {
-            leg_tq[i] = mature_lqr[i][0][THETA] *
-                            (robot.leg_states[i].ref.state.theta - robot.leg_states[i].curr.state.theta) +
-                        mature_lqr[i][0][DOT_THETA] *
-                            (robot.leg_states[i].ref.state.dtheta - robot.leg_states[i].curr.state.dtheta);
-            robot.chassis_motor_torques[W_INDEX(i)] += 0;
+            if (robot.detect_states.on_ground[i])
+            {
+                continue;
+            }
+            leg_tq[i] += mature_lqr[i][0][THETA] *
+                             (robot.leg_states[i].ref.state.theta - robot.leg_states[i].curr.state.theta) +
+                         mature_lqr[i][0][DOT_THETA] *
+                             (robot.leg_states[i].ref.state.dtheta - robot.leg_states[i].curr.state.dtheta);
+
+            // float32_t fdb = robot.chassis_motor_vel[W_INDEX(i)];
+            // float32_t wheel_tor = 0;
+            // float32_t ref = 0;
+            // Wheelpid_ptr[i]->calc(&ref,&fdb,nullptr,&wheel_tor);
+            robot.chassis_motor_torques[W_INDEX(i)] = 0;
 
             /* perform virtual leg length control */
             leg_push_force = LegLenCtrlCal(
                 leg_len_ctrls + i, robot.leg_states[i].ref.state.height, robot.leg_states[i].curr.state.height,
                 robot.leg_states[i].curr.state.dheight);
-            leg_push_force += kBodyMass * kGravAcc * arm_cos_f32(robot.leg_states[i].curr.state.theta) / 2;
+            float a = (-robot.leg_states[i].curr.state.height + kAirHeightMax) / (kAirHeightMax - kAirHeightMin);
+
+            leg_push_force += (a * kBodyMass / 2.0f - (1 - a) * (kLegMass + kWheelMass)) * kGravAcc * arm_cos_f32(robot.leg_states[i].curr.state.theta);
+
+            /* convert operation space to joint space */
+            robot.five_rods_cal.opSp2JointSp(&robot.five_rods_cal, &front_tq, &behind_tq, leg_push_force, leg_tq[i],
+                                             robot.chassis_motors[FJ_INDEX(i)]->angle(), robot.chassis_motors[BJ_INDEX(i)]->angle());
+            robot.chassis_motor_torques[FJ_INDEX(i)] += front_tq;
+            robot.chassis_motor_torques[BJ_INDEX(i)] += behind_tq;
+        }
+        // 正常腿计算LQR
+        for (uint8_t i = 0; i < 2; i++)
+        {
+            if (!robot.detect_states.on_ground[i])
+            {
+                continue;
+            }
+            for (uint8_t j = 0; j < 6; j++)
+            {
+                leg_tq[i] += mature_lqr[i][0][j] *
+                             (robot.leg_states[i].ref.data[j] - robot.leg_states[i].curr.data[j]) / 2;
+                robot.chassis_motor_torques[W_INDEX(i)] +=
+                    mature_lqr[i][1][j] * (robot.leg_states[i].ref.data[j] - robot.leg_states[i].curr.data[j]) / 2;
+            }
+
+            /* perform virtual leg length control */
+            leg_push_force += LegLenCtrlCal(
+                leg_len_ctrls + i, robot.leg_states[i].ref.state.height, robot.leg_states[i].curr.state.height,
+                robot.leg_states[i].curr.state.dheight);
+            if (i == 0)
+            {
+                test_force[2] = leg_push_force - test_force[0];
+            }
+            leg_push_force += kBodyMass * kGravAcc * cos(robot.leg_states[i].curr.state.theta) / 2;
 
             /* convert operation space to joint space */
             robot.five_rods_cal.opSp2JointSp(&robot.five_rods_cal, &front_tq, &behind_tq, leg_push_force, leg_tq[i],
@@ -865,11 +1107,12 @@ static void FlyController(void)
         }
         break;
     case FLY_STATE_RETURN:
-        robot.cmd.height = kHeightMid;
-
+        // robot.cmd.height = (robot.leg_states[LEFT].ref.state.height+robot.leg_states[RIGHT].ref.state.height)/2;
+        robot.cmd.height = ground_height;
         robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_MATURE;
         robot.chassis_mode.last = CHASSIS_FLY;
-        robot.steer_mode.ref = robot.steer_mode.curr = STEER_MOVE;
+        debug_num = 7;
+        robot.steer_mode.ref = robot.steer_mode.curr = last_steer_mode;
         robot.steer_mode.last = STEER_DEPART;
         robot.cmd.pitch_ang = robot.imu_datas.euler_vals[PITCH];
         break;
@@ -908,11 +1151,11 @@ static void JointCtrlByPid(float leg_len, float leg_ang, float ffd_force)
     }
 }
 float rot_torque;
-float rot_tq_fdb[2]={0};
-float fdb0=0;
+float rot_tq_fdb[2] = {0};
+float fdb0 = 0;
 hello_world::pid::MultiNodesPid::Datas rot_torque_pid_out[2];
-bool slip_flag=false;
-float yaw_torque_lim[2]={0};
+bool slip_flag = false;
+float yaw_torque_lim[2] = {0};
 /**
  * @brief       control steer yaw angle
  * @retval      None
@@ -921,7 +1164,8 @@ float yaw_torque_lim[2]={0};
 static void SteerControl(void)
 {
 
-    if(robot.steer_mode.last!=robot.steer_mode.curr){
+    if (robot.steer_mode.last != robot.steer_mode.curr)
+    {
         YawTqPidReset();
     }
 
@@ -930,9 +1174,9 @@ static void SteerControl(void)
                              -robot.chassis_motors[LWM]->motor_info().torq_input_lim - robot.chassis_motor_torques[LWM]};
     float torque_lim_r[2] = {robot.chassis_motors[RWM]->motor_info().torq_input_lim - robot.chassis_motor_torques[RWM],
                              -robot.chassis_motors[RWM]->motor_info().torq_input_lim - robot.chassis_motor_torques[RWM]};
-   yaw_torque_lim[0]=MIN(torque_lim_r[0], -torque_lim_l[1]);
+    yaw_torque_lim[0] = MIN(torque_lim_r[0], -torque_lim_l[1]);
 
-    yaw_torque_lim[1]=MIN(torque_lim_r[1], -torque_lim_l[0]);
+    yaw_torque_lim[1] = MIN(torque_lim_r[1], -torque_lim_l[0]);
 
     if (yaw_torque_lim[0] < yaw_torque_lim[1])
     {
@@ -963,25 +1207,23 @@ static void SteerControl(void)
     rot_tq_fdb[1] = robot.chassis_states.yaw_omg;
     ANGLE_ACROSS0_HANDLE_RAD(rot_tq_fdb[0], robot.cmd.yaw_ang);
 
-    if(slip_flag&&!robot.detect_states.slip[0]&&!robot.detect_states.slip[1]){
-        slip_flag=false;
-        // robot.cmd.yaw_ang=robot.chassis_states.yaw_ang;
-    }
-
     yaw_tq_pid_ptr->calc(&robot.cmd.yaw_ang, rot_tq_fdb, nullptr, &rot_torque);
     static float rot = rot_torque;
     rot = rot_torque;
     // rot_torque = hello_world::Bound((hello_world::Bound((robot.cmd.yaw_ang - rot_tq_fdb[0])*7.5,-10.0f,10.0f)-robot.chassis_states.yaw_omg)*3.5f,-8.0f,8.0f);
 
-    if(slip_flag == false&&(robot.detect_states.slip[0]||robot.detect_states.slip[1])){
-        slip_flag=true;
-        rot_torque=0;
-    }
+    // if(slip_flag&&!robot.detect_states.slip[0]&&!robot.detect_states.slip[1]){
+    //     slip_flag=false;
+    //     // robot.cmd.yaw_ang=robot.chassis_states.yaw_ang;
+    // }
+    // if(robot.steer_mode.curr!=STEER_GYRO&&slip_flag == false&&(robot.detect_states.slip[0]||robot.detect_states.slip[1])){
+    //     slip_flag=true;
+    //     rot_torque=0;
+    // }
 
+    // rot_torque_pid_out[0]=yaw_tq_pid_ptr->getDatasAt(0);
+    // rot_torque_pid_out[1]=yaw_tq_pid_ptr->getDatasAt(1);
 
-    rot_torque_pid_out[0]=yaw_tq_pid_ptr->getDatasAt(0);
-    rot_torque_pid_out[1]=yaw_tq_pid_ptr->getDatasAt(1);
- 
     LIMIT_MAX(rot_torque, yaw_torque_lim[0], yaw_torque_lim[1]);
     // rot_torque -=robot.yaw_motor->torq()/2;
 
@@ -990,7 +1232,8 @@ static void SteerControl(void)
 
     float front_tq, behind_tq;
     float leg_tq[2] = {-rot_torque * (robot.leg_states[LEFT].curr.state.height) / (kWheelDiam / 2),
-                       rot_torque * (robot.leg_states[RIGHT].curr.state.height) / (kWheelDiam / 2)};
+                       +rot_torque * (robot.leg_states[RIGHT].curr.state.height) / (kWheelDiam / 2)};
+    // float leg_tq[2] = {0.0f,0.0f};
     // if(robot.steer_mode.curr == STEER_GYRO){
     // float32_t gyro_torque=0;
     // gyro_torque =robot.gyro_forward_speed*2.0f*cos(robot.gyro_forward_angle-robot.chassis_states.yaw_ang);
@@ -1014,7 +1257,7 @@ static void SteerControl(void)
     //     float32_t slip_torque=0;
     //     Wheelpid_ptr[1]->calc(&robot.leg_states[1].curr.state.dpos, &fdb, nullptr, &slip_torque);
     //     robot.chassis_motor_torques[RWM] += slip_torque;
-        
+
     // }
 }
 
@@ -1023,124 +1266,136 @@ static void SteerControl(void)
  * @retval      None
  * @note        None
  */
-static void JumpController(void){
-        float dpos;
-        float diff_pos;
-        float dtq, fdb;
-        float ref;
-        float front_tq, behind_tq, leg_push_force, leg_tq[2];
-        switch (robot.mode_state.jump) {
-        case JUMP_STATE_INIT:
-            for (uint8_t i = 0; i < 2; i++) {
-                leg_len_ctrls[i].iout = 0;
+static void JumpController(void)
+{
+    float dpos;
+    float diff_pos;
+    float dtq, fdb;
+    float ref;
+    float front_tq, behind_tq, leg_push_force, leg_tq[2];
+    switch (robot.mode_state.jump)
+    {
+    case JUMP_STATE_INIT:
+        for (uint8_t i = 0; i < 2; i++)
+        {
+            leg_len_ctrls[i].iout = 0;
+        }
+
+        JointPidReset();
+        robot.mode_state.jump = JUMP_STATE_JUMP;
+    case JUMP_STATE_JUMP:
+        /* Make the joint motor output at the maximum torque until the leg reaches the maximum length */
+        robot.chassis_motor_torques[LFM] = kJumpTq;
+        robot.chassis_motor_torques[LBM] = -kJumpTq;
+        robot.chassis_motor_torques[RFM] = kJumpTq;
+        robot.chassis_motor_torques[RBM] = -kJumpTq;
+
+        dpos = GetLimitedSpeed(robot.cmd.dpos);
+
+        diff_pos =
+            (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 + dpos * kCtrlPeriod -
+            (robot.leg_states[LEFT].curr.state.pos + robot.leg_states[RIGHT].curr.state.pos) / 2;
+        if (fabsf(diff_pos) < kPosMaxBias)
+        {
+            robot.leg_states[LEFT].ref.state.pos += dpos * kCtrlPeriod;
+            robot.leg_states[RIGHT].ref.state.pos += dpos * kCtrlPeriod;
+        }
+
+        CalLqrMat();
+
+        for (uint8_t i = 0; i < 2; i++)
+        {
+            for (uint8_t j = 0; j < 6; j++)
+            {
+                robot.chassis_motor_torques[W_INDEX(i)] +=
+                    mature_lqr[i][1][j] * (robot.leg_states[i].ref.data[j] - robot.leg_states[i].curr.data[j]) / 2;
             }
+        }
 
-            JointPidReset();
-            robot.mode_state.jump = JUMP_STATE_JUMP;
-        case JUMP_STATE_JUMP:
-            /* Make the joint motor output at the maximum torque until the leg reaches the maximum length */
-            robot.chassis_motor_torques[LFM] = kJumpTq;
-            robot.chassis_motor_torques[LBM] = -kJumpTq;
-            robot.chassis_motor_torques[RFM] = kJumpTq;
-            robot.chassis_motor_torques[RBM] = -kJumpTq;
-
-            dpos = GetLimitedSpeed(robot.cmd.dpos);
-
+        if (
+            (robot.leg_states[LEFT].curr.state.height > kJumpHeightMax) ||
+            (robot.leg_states[RIGHT].curr.state.height > kJumpHeightMax))
+        {
             diff_pos =
-                (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 + dpos * kCtrlPeriod -
+                (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 -
                 (robot.leg_states[LEFT].curr.state.pos + robot.leg_states[RIGHT].curr.state.pos) / 2;
-            if (fabsf(diff_pos) < kPosMaxBias) {
-                robot.leg_states[LEFT].ref.state.pos += dpos * kCtrlPeriod;
-                robot.leg_states[RIGHT].ref.state.pos += dpos * kCtrlPeriod;
-            }
+            LIMIT_MAX(diff_pos, kAirPosMaxBias, -kAirPosMaxBias);
+            // robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = robot.cmd.dpos * 0.55f;
+            robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = diff_pos;
+            robot.leg_states[LEFT].curr.state.pos = robot.leg_states[RIGHT].curr.state.pos = 0;
 
-            CalLqrMat();
+            robot.mode_state.jump = JUMP_STATE_RECOVERY;
+        }
+        break;
+    case JUMP_STATE_RECOVERY:
+        JointCtrlByPid(kJumpHeightMin, PI / 2, -(kLegMass + kWheelMass) * kGravAcc);
 
-            for (uint8_t i = 0; i < 2; i++) {
-                for (uint8_t j = 0; j < 6; j++) {
-                    robot.chassis_motor_torques[W_INDEX(i)] +=
-                        mature_lqr[i][1][j] * (robot.leg_states[i].ref.data[j] - robot.leg_states[i].curr.data[j]) / 2;
-                }
-            }
+        if (
+            (fabsf(robot.leg_states[LEFT].curr.state.height - kJumpHeightMin) < kJumpHeightThres) ||
+            (fabsf(robot.leg_states[RIGHT].curr.state.height - kJumpHeightMin) < kJumpHeightThres))
+        {
+            robot.cmd.height_f = kJumpHeightMin;
 
-            if (
-                (robot.leg_states[LEFT].curr.state.height > kJumpHeightMax) ||
-                (robot.leg_states[RIGHT].curr.state.height > kJumpHeightMax)) {
-                diff_pos =
-                    (robot.leg_states[LEFT].ref.state.pos + robot.leg_states[RIGHT].ref.state.pos) / 2 -
-                    (robot.leg_states[LEFT].curr.state.pos + robot.leg_states[RIGHT].curr.state.pos) / 2;
-                LIMIT_MAX(diff_pos, kAirPosMaxBias, -kAirPosMaxBias);
-                // robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = robot.cmd.dpos * 0.55f;
-                robot.leg_states[LEFT].ref.state.pos = robot.leg_states[RIGHT].ref.state.pos = diff_pos;
-                robot.leg_states[LEFT].curr.state.pos = robot.leg_states[RIGHT].curr.state.pos = 0;
+            robot.mode_state.jump = JUMP_STATE_AIR;
+        }
+        break;
+    case JUMP_STATE_AIR:
+        if (robot.detect_states.on_ground[0] && robot.detect_states.on_ground[1])
+        {
+            robot.mode_state.jump = JUMP_STATE_RETURN;
+        }
 
-                robot.mode_state.jump = JUMP_STATE_RECOVERY;
-            }
-            break;
-        case JUMP_STATE_RECOVERY:
-            JointCtrlByPid(kJumpHeightMin, PI / 2, -(kLegMass + kWheelMass) * kGravAcc);
+        robot.cmd.height_f += kAirDH * kCtrlPeriod;
+        LIMIT_MAX(robot.cmd.height_f, kAirHeightMin, kAirHeightMax);
 
-            if (
-                (fabsf(robot.leg_states[LEFT].curr.state.height - kJumpHeightMin) < kJumpHeightThres) ||
-                (fabsf(robot.leg_states[RIGHT].curr.state.height - kJumpHeightMin) < kJumpHeightThres)) {
-                robot.cmd.height_f = kJumpHeightMin;
+        robot.leg_states[LEFT].ref.state.height = robot.cmd.height_f;
+        robot.leg_states[RIGHT].ref.state.height = robot.cmd.height_f;
+        LIMIT_MAX(robot.leg_states[LEFT].ref.state.height, kAirHeightMax, kAirHeightMin);
+        LIMIT_MAX(robot.leg_states[RIGHT].ref.state.height, kAirHeightMax, kAirHeightMin);
 
-                robot.mode_state.jump = JUMP_STATE_AIR;
-            }
-            break;
-        case JUMP_STATE_AIR:
-            if (robot.detect_states.on_ground) {
-                robot.mode_state.jump = JUMP_STATE_RETURN;
-            }
+        CalLqrMat();
 
-            robot.cmd.height_f += kAirDH * kCtrlPeriod;
-            LIMIT_MAX(robot.cmd.height_f, kAirHeightMin, kAirHeightMax);
+        fdb = robot.leg_states[RIGHT].curr.state.theta - robot.leg_states[LEFT].curr.state.theta;
+        ref = 0;
+        leg_ang_pid_ptr->calc(&ref, &fdb, nullptr, &dtq);
+        leg_tq[0] = -dtq;
+        leg_tq[1] = dtq;
 
-            robot.leg_states[LEFT].ref.state.height = robot.cmd.height_f;
-            robot.leg_states[RIGHT].ref.state.height = robot.cmd.height_f;
-            LIMIT_MAX(robot.leg_states[LEFT].ref.state.height, kAirHeightMax, kAirHeightMin);
-            LIMIT_MAX(robot.leg_states[RIGHT].ref.state.height, kAirHeightMax, kAirHeightMin);
+        /* only control theta and dtheta */
+        for (uint8_t i = 0; i < 2; i++)
+        {
+            leg_tq[i] = mature_lqr[i][0][THETA] *
+                            (robot.leg_states[i].ref.state.theta - robot.leg_states[i].curr.state.theta) +
+                        mature_lqr[i][0][DOT_THETA] *
+                            (robot.leg_states[i].ref.state.dtheta - robot.leg_states[i].curr.state.dtheta);
+            robot.chassis_motor_torques[W_INDEX(i)] += 0;
 
-            CalLqrMat();
-            
-            fdb = robot.leg_states[RIGHT].curr.state.theta - robot.leg_states[LEFT].curr.state.theta;
-            ref = 0;
-            leg_ang_pid_ptr->calc(&ref, &fdb, nullptr,&dtq);
-            leg_tq[0] = -dtq;
-            leg_tq[1] = dtq;
+            /* perform virtual leg length control */
+            leg_push_force = LegLenCtrlCal(
+                leg_len_ctrls + i, robot.leg_states[i].ref.state.height, robot.leg_states[i].curr.state.height,
+                robot.leg_states[i].curr.state.dheight);
+            leg_push_force += kBodyMass * kGravAcc * arm_cos_f32(robot.leg_states[i].curr.state.theta) / 2;
 
-            /* only control theta and dtheta */
-            for (uint8_t i = 0; i < 2; i++) {
-                leg_tq[i] = mature_lqr[i][0][THETA] *
-                                (robot.leg_states[i].ref.state.theta - robot.leg_states[i].curr.state.theta) +
-                            mature_lqr[i][0][DOT_THETA] *
-                                (robot.leg_states[i].ref.state.dtheta - robot.leg_states[i].curr.state.dtheta);
-                robot.chassis_motor_torques[W_INDEX(i)] += 0;
+            /* convert operation space to joint space */
+            robot.five_rods_cal.opSp2JointSp(&robot.five_rods_cal, &front_tq, &behind_tq, leg_push_force, leg_tq[i],
+                                             robot.chassis_motors[FJ_INDEX(i)]->angle(), robot.chassis_motors[BJ_INDEX(i)]->angle());
+            robot.chassis_motor_torques[FJ_INDEX(i)] += front_tq;
+            robot.chassis_motor_torques[BJ_INDEX(i)] += behind_tq;
+        }
 
-                /* perform virtual leg length control */
-                leg_push_force = LegLenCtrlCal(
-                    leg_len_ctrls + i, robot.leg_states[i].ref.state.height, robot.leg_states[i].curr.state.height,
-                    robot.leg_states[i].curr.state.dheight);
-                leg_push_force += kBodyMass * kGravAcc * arm_cos_f32(robot.leg_states[i].curr.state.theta) / 2;
+        break;
+    case JUMP_STATE_RETURN:
+        robot.cmd.height = kHeightMid;
 
-                /* convert operation space to joint space */
-                robot.five_rods_cal.opSp2JointSp(&robot.five_rods_cal, &front_tq, &behind_tq, leg_push_force, leg_tq[i],
-                                                 robot.chassis_motors[FJ_INDEX(i)]->angle(), robot.chassis_motors[BJ_INDEX(i)]->angle());
-                robot.chassis_motor_torques[FJ_INDEX(i)] += front_tq;
-                robot.chassis_motor_torques[BJ_INDEX(i)] += behind_tq;
-            }
-            break;
-        case JUMP_STATE_RETURN:
-            robot.cmd.height = kHeightMid;
-
-            robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_MATURE;
-            robot.chassis_mode.last = CHASSIS_JUMP;
-            robot.steer_mode.ref = robot.steer_mode.curr = STEER_MOVE;
-            robot.steer_mode.last = STEER_DEPART;
-            robot.cmd.pitch_ang = robot.imu_datas.euler_vals[PITCH];
-            break;
-        default:
-            break;
+        robot.chassis_mode.ref = robot.chassis_mode.curr = CHASSIS_MATURE;
+        robot.chassis_mode.last = CHASSIS_JUMP;
+        debug_num = 8;
+        robot.steer_mode.ref = robot.steer_mode.curr = STEER_MOVE;
+        robot.steer_mode.last = STEER_DEPART;
+        robot.cmd.pitch_ang = robot.imu_datas.euler_vals[PITCH];
+        break;
+    default:
+        break;
     }
 }
 
@@ -1220,7 +1475,6 @@ static void JumpController(void){
 //     }
 // }
 
-
 /**
  * @brief      yaw轴电机控制
  * @retval      None
@@ -1243,25 +1497,6 @@ void YawMotorContorller(void)
     // float output = 0;
     // yaw_motor_pid_ptr->calc(&ref, fdb, nullptr, &output);
     // robot.yaw_motor_input = output;
-}
-
-/**
- * @brief       compute polynomial
- * @param       *p: ptr to array of polynomial coefficient
- * @param       x: independent variable
- * @param       n: highest power of polynomial
- * @retval      None
- * @note        polynomial power from n to 0
- */
-static float PolyVal(const float *p, float x, uint8_t n)
-{
-    float result = 0;
-    for (uint8_t i = 0; i <= n; i++)
-    {
-        result = result * x + p[i];
-    }
-
-    return result;
 }
 
 /**
@@ -1318,7 +1553,7 @@ static void CalLqrMat(void)
             mature_lqr[LEFT][i][j] = PolyVal(kMatureLqrPoly[i][j], robot.leg_states[LEFT].curr.state.height, 3);
             mature_lqr[RIGHT][i][j] = PolyVal(kMatureLqrPoly[i][j], robot.leg_states[RIGHT].curr.state.height, 3);
         }
-    } 
+    }
 }
 
 inline static void ConfirmPidReset(void)
@@ -1336,13 +1571,14 @@ inline static void WheelPidsReset(void)
         Wheelpid_ptr[i]->reset();
     }
 }
-
+// 关节滤波速度计算
 void JointVelFilter(void)
-{   
-    if(confirm_finish_flag == false){
+{
+    if (confirm_finish_flag == false)
+    {
         for (int i = 0; i < 6; i++)
         {
-        robot.chassis_motor_vel[i]=robot.chassis_motors[i]->vel();
+            robot.chassis_motor_vel[i] = robot.chassis_motors[i]->vel();
         }
         return;
     }
@@ -1350,7 +1586,7 @@ void JointVelFilter(void)
     {
         // float32_t ang = robot.chassis_motors[i]->angle();
         // joint_motor_td[i]->calc(&ang, robot.chassis_motor_vel + i);
-        robot.chassis_motor_vel[i] = robot.chassis_motors[i]->vel()*0.2+robot.chassis_motor_vel[i]*0.8;
+        robot.chassis_motor_vel[i] = robot.chassis_motors[i]->vel() * 0.9 + robot.chassis_motor_vel[i] * 0.1;
     }
 }
 /**
@@ -1361,7 +1597,13 @@ void JointVelFilter(void)
  */
 static float GetLimitedSpeed(float dpos_ref)
 {
-    if (!robot.cmd.speed_limit) {
+    if (!robot.cmd.speed_limit)
+    {
+
+        // float32_t dpos_lim = kMaxMovingSpeed;
+        // float32_t dpos_curr = (robot.leg_states[LEFT].curr.state.dpos + robot.leg_states[RIGHT].curr.state.dpos) / 2;
+        // dpos_ref = MIN(dpos_ref, dpos_lim - 0.7*(dpos_curr - dpos_lim));
+
         return dpos_ref;
     }
 
@@ -1371,25 +1613,36 @@ static float GetLimitedSpeed(float dpos_ref)
 
     /* 根据超电剩余量进行限速 */
     float sup_cap_dpos_lim = robot.sup_cap->get_remain_present() * kMaxLimSpeed;
+
+    if (robot.cmd.auto_jump)
+    {
+        sup_cap_dpos_lim = robot.sup_cap->get_remain_present() * kAutoJumpSpeed;
+    }
+
     LIMIT_MAX(dpos_ref, sup_cap_dpos_lim, -sup_cap_dpos_lim);
 
     return dpos_ref;
 
-    if (dpos_ref > 0) {
+    if (dpos_ref > 0)
+    {
         dpos_lim[0] = dpos_ref;
         dpos_lim[1] = 0;
-    } else {
+    }
+    else
+    {
         dpos_lim[0] = 0;
         dpos_lim[1] = dpos_ref;
     }
 
-    for (uint8_t i = 0; i < 2; i++) {
+    for (uint8_t i = 0; i < 2; i++)
+    {
         joint_angs[0] = robot.chassis_motors[FJ_INDEX(i)]->angle();
         joint_angs[1] =
             robot.chassis_motors[BJ_INDEX(i)]->angle() > 0 ? robot.chassis_motors[BJ_INDEX(i)]->angle() : robot.chassis_motors[BJ_INDEX(i)]->angle() + 2 * PI;
 
         /* 根据与大腿与机械限位的角度差进行限速 */
-        for (uint8_t j = 0; j < 2; j++) {
+        for (uint8_t j = 0; j < 2; j++)
+        {
             diff_dpos[0] =
                 MIN(diff_dpos[0], kSpeedDiffLimitSlope * fabsf(joint_angs[j] - kAbsMechanicalLimAng[j][0]));
             diff_dpos[1] =
@@ -1402,4 +1655,26 @@ static float GetLimitedSpeed(float dpos_ref)
     LIMIT_MAX(dpos_ref, dpos_lim[0], dpos_lim[1]);
 
     return dpos_ref;
+}
+
+float leg_force[2] = {0};
+float debug_x[4] = {0};
+// 计算因转向导致的两腿补偿力矩
+float CalTurnTorDiff(void)
+{
+    float a, b, c, d;
+    float mass_height = (robot.leg_states[LEFT].curr.state.height + robot.leg_states[LEFT].curr.state.height) / 2 + kBarycenterHeight;
+    float theta = robot.imu_datas.euler_vals[ROLL];
+    c = kGravAcc * kBodyMass;
+    a = kWheelBase / (2 * cos(theta)) - mass_height * sin(theta);
+    b = -kWheelBase / (2 * cos(theta)) - mass_height * sin(theta);
+    d = -kBodyMass * robot.chassis_states.dpos * robot.imu_datas.gyro_vals[YAW];
+    debug_x[0] = a;
+    debug_x[1] = b;
+    debug_x[2] = c;
+    debug_x[3] = d;
+
+    leg_force[0] = (d - b * c) / (a - b);
+    leg_force[1] = (d - a * c) / (b - a);
+    return (leg_force[0] - leg_force[1]) / 2;
 }

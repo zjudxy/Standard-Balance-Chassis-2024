@@ -85,7 +85,7 @@ void FDCAN_Send_Msg(FDCAN_HandleTypeDef *hfdcan, uint8_t *msg, uint32_t id, uint
   HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &tx_header, msg);
 }
 int sup_cap_rx_time = 0;
-
+uint32_t level = 0;
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
   if (RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE)
@@ -93,7 +93,8 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     FDCAN_RxHeaderTypeDef rx_header1;
     if (hfdcan == &hfdcan1)
     {
-      HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &rx_header1, &rx_data1[0]);
+      while(level = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1, FDCAN_RX_FIFO0)) {
+        HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &rx_header1, &rx_data1[0]);
 
 
         yaw_motor_ptr->decode(rx_data1, rx_header1.Identifier);
@@ -107,6 +108,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
           robot.sup_cap->Decode(rx_data1);
           sup_cap_rx_time ++ ;
         }
+      }
         
     }
     
@@ -114,6 +116,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
   }
 }
+
+uint8_t LWM_data[8];
+uint8_t RWM_data[8];
 void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
 {
   if (RxFifo1ITs & FDCAN_IT_RX_FIFO1_NEW_MESSAGE)
@@ -125,14 +130,25 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
             if (rx_header2.Identifier == GIMBAL_TX_ID)
       {
         robot.comm.chassisDecode(&robot.comm, rx_data2);
+        robot.gimbal_comm_tick = robot.control_tick;
       }
       else
       {
+        if(rx_header2.Identifier==robot.yaw_motor->rx_id()){
         robot.yaw_motor->decode(rx_data2, rx_header2.Identifier);
+        }
       for (int i = 0; i < 6; i++)
       {
         robot.chassis_motors[i]->decode(rx_data2, rx_header2.Identifier);
       }
+      }
+      if(rx_header2.Identifier==robot.chassis_motors[LWM]->rx_id())
+      {
+        memcpy(LWM_data,rx_data2,8);
+      }
+      if(rx_header2.Identifier==robot.chassis_motors[RWM]->rx_id())
+      {
+        memcpy(RWM_data,rx_data2,8);
       }
       // if(rx_header2.Identifier == SUP_CAP_TX_ID)
       //   {

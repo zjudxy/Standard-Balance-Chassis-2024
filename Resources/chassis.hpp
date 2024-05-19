@@ -17,7 +17,9 @@
 #define __CHASSIS_H_
 
 
-
+// #define WHEEL_MOTOR_8910_150mm
+// #define WHEEL_MOTOR_8910_200mm
+#define WHEEL_MOTOR_3508_120mm
 
 /* Includes ------------------------------------------------------------------*/
 #include "arm_math.h"
@@ -29,13 +31,16 @@
 #include "chassis_motor.hpp"
 #include "buzzer.hpp"
 #include "judge.hpp"
+#include "dist_measure.hpp"
 #include "super_capacity.hpp"
 #include "chassis_ui_task.hpp"
 #include "referee_data.hpp"
 namespace buzzer = hello_world::buzzer;
 namespace motor = hello_world::motor;
+using namespace DistMeasure;
 /* Exported macro ------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
+
 
 
 /* 电机编号 */
@@ -84,6 +89,7 @@ typedef enum _confirm_state_e {
 
 typedef enum _recovery_state_e {
     RECOVERY_STATE_INIT,
+    RECOVERY_STATE_LOCK,
     RECOVERY_STATE_RECOVERY,
     RECOVERY_STATE_LEG_EXTEND,
     RECOVERY_STATE_TUNE,
@@ -109,6 +115,12 @@ typedef enum _fly_state_e {
     FLY_STATE_AIR,
     FLY_STATE_RETURN,
 } FlyState_e;
+
+typedef enum _abnormal_state_e {
+    ALL_STABLE,
+    Abnormal_warn,
+    Abnormal_dangerous
+} AbnormalState_e;
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -170,7 +182,9 @@ typedef struct {
 typedef struct _cmd_t {
     float32_t height;                // 腿长
     float32_t height_f;              // 腿长（滤波）
+    float32_t air_height_diff;               // 腿长
     float32_t dpos;                  // 速度
+    float32_t dpos_f;                // 速度（滤波）
     float32_t yaw_ang;               // yaw轴角度
     float32_t pitch_ang;             // pitch轴角度
     float32_t roll_ang;              // roll轴角度
@@ -179,7 +193,7 @@ typedef struct _cmd_t {
     bool gyro_cal_flag;                 //是否陀螺补偿计算
     ChassisMode_e chassis_mode_ref;  // 底盘模式
     SteerMode_e steer_mode_ref;      // 转向模式
-
+    
     bool recovery_tune;  // 起身微调
     bool speed_limit;    // 速度限制
     bool start_comm;     // 开始通信
@@ -196,7 +210,7 @@ typedef struct _cmd_t {
     bool ignore_overheated;             // 无视热量显示
     bool gimbal_enable;                 // 云台使能
     bool auto_shoot;                    //依据视觉自动射击
-    
+    bool gyro_limit;        
     uint8_t gimbal_reverse_seq;   // 云台反向
     AutoAimMode_e auto_aim_mode;  // 自瞄模式
 } Cmd_t;
@@ -213,11 +227,14 @@ typedef struct _chassis_states_t {
 
 /* 底盘检测状态 */
 typedef struct _chassis_detect_states_t {
-    bool on_ground;    // 着地
+    bool on_ground[3];    // 着地
+
     bool low_battery;  // 供电源耗尽
     bool abnormal;     // 底盘异常
+    AbnormalState_e abnormal_type; 
     bool close2obs;    // 是否接近障碍物
     bool slip[2];         // 是否打滑
+    bool gimbal_online;  // 云台在线
 } ChassisDetectStates_t;
 
 /* IMU数据 */
@@ -244,6 +261,8 @@ typedef union _mode_state_u {
 typedef struct
 {
     LegState2_t leg_states[2];            // 两侧腿状态
+    LegState_u leg_states_estimate[2];   //下次估计状态
+    float dpos_filter[2];                 // 速度滤波
     ChassisStates_t chassis_states;       // 底盘状态
     ChassisDetectStates_t detect_states;  // 检测状态
     ImuDatas_t imu_datas;                 // IMU数据
@@ -254,6 +273,7 @@ typedef struct
     Cmd_t cmd;         // 控制指令
     CmdSrc_e cmd_src;  // 控制源
     bool Init_finish_flag; //是否初始化完毕
+    bool joint_ang_cal_flag; //是否关节零位计算
 
     FiveRods_t five_rods_cal;  // 五连杆计算
     motor::Motor* chassis_motors[MOTOR_NUM];              // 底盘电机
@@ -270,7 +290,10 @@ typedef struct
     super_capacity* sup_cap;          // 超电
     RobotReferee *referee_ptr;          //裁判系统通讯
     // Tfluna_t dist_measurement[2];  // 测距
-    int mature_tick;                 // 正常模式计时
+    DistMeasure::dist_measure* dist_measurement[2];  // 测距
+    uint32_t mature_tick;                 // 正常模式计时
+    uint32_t gimbal_comm_tick;                   // 云台通讯时刻
+
     // UiDrawer* ui_drawer;         // UI界面
     Referee * ui_drawer;         // UI界面
 } BalanceRobot_t;
@@ -308,6 +331,6 @@ inline static float32_t LimDiff(float32_t ref_vel, float32_t curr_vel, float32_t
     return curr_vel + dvel;
 }
 
-
+extern int debug_num;
 
 #endif /* __FILE_H_ */

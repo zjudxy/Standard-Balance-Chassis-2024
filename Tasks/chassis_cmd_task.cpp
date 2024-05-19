@@ -104,7 +104,8 @@ void CmdTask(void)
     break;
   }
 
-  if(robot.Init_finish_flag){
+  if (robot.Init_finish_flag)
+  {
     robot.cmd.start_comm = true;
   }
 
@@ -217,14 +218,14 @@ static void JoystickCmd(void)
       // }
       // else
       // {
-      //   if (fabsf(robot.yaw_motor->angle()) < PI / 2)
-      //   {
-      //     robot.cmd.roll_ang = kRollMaxAng * curr_rc_ptr->rc_rh();
-      //   }
-      //   else
-      //   {
-      //     robot.cmd.roll_ang = -kRollMaxAng * curr_rc_ptr->rc_rh();
-      //   }
+      if (fabsf(robot.yaw_motor->angle()) < PI / 2)
+      {
+        robot.cmd.roll_ang = kRollMaxAng * curr_rc_ptr->rc_rh();
+      }
+      else
+      {
+        robot.cmd.roll_ang = -kRollMaxAng * curr_rc_ptr->rc_rh();
+      }
       // }
 
       robot.cmd.dpos = vx * cYaw + vy * sYaw; // 速度合成
@@ -232,22 +233,22 @@ static void JoystickCmd(void)
     case STEER_GYRO:
       /* 根据底盘原始旋转方向选择陀螺方向 */
       // //测试滞后用
-      // if (robot.cmd.gyro_dir == 0)
-      // {
-      //   if (robot.chassis_states.yaw_omg > 0)
-      //   {
-      //     robot.cmd.gyro_dir = kCcwDir;
-      //   }
-      //   else
-      //   {
-      //     robot.cmd.gyro_dir = kCwDir;
-      //   }
-      // }
+      if (robot.cmd.gyro_dir == 0)
+      {
+        if (robot.chassis_states.yaw_omg > 0)
+        {
+          robot.cmd.gyro_dir = kCcwDir;
+        }
+        else
+        {
+          robot.cmd.gyro_dir = kCwDir;
+        }
+      }
       // robot.cmd.dpos = cos((robot.control_tick-gyro_tick)/1000.0f*kGyrospeed)*1.8f;
       // ANGLE_ACROSS0_HANDLE_RAD(robot.cmd.yaw_ang, 0);
 
       // return ;
-      robot.cmd.gyro_dir = kCcwDir;
+      // robot.cmd.gyro_dir = kCcwDir;
 
       float32_t vx, vy;
 
@@ -255,19 +256,28 @@ static void JoystickCmd(void)
       vy = -curr_rc_ptr->rc_rh();
       robot.gyro_forward_angle = atan2(vy, vx);
       robot.gyro_forward_speed = sqrt(vx * vx + vy * vy);
+
       if (robot.steer_mode.ref != STEER_GYRO || fabs(robot.gyro_forward_speed) > 0.1f)
       {
-        robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * kMinGyroSpeed, robot.cmd.gyro_speed, kMaxGyroAcc);
+        robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * kMinGyroSpeed, robot.cmd.gyro_speed, kMaxGyroAcc * 1.5f);
       }
       else
       {
-        robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * kMaxGyroSpeed, robot.cmd.gyro_speed, kMaxGyroAcc);
+        if (robot.cmd.gyro_limit)
+        {
+
+          robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * 4.5f, robot.cmd.gyro_speed, kMaxGyroAcc);
+        }
+        else
+        {
+          robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * kMaxGyroSpeed, robot.cmd.gyro_speed, kMaxGyroAcc);
+        }
       }
       // cmd_angle_curr = -robot.gyro_forward_angle - D2R(20);
       // robot.gyro_forward_speed = robot.gyro_forward_speed * move_scale
       // * cos(angle_offset + 0.21f + cmd_angle_curr - robot.gyro_forward_angle + robot.chassis_states.yaw_ang);
 
-      robot.gyro_forward_speed = robot.gyro_forward_speed * move_scale * cos(robot.yaw_motor->angle() + robot.gyro_forward_angle + angle_offset);
+      robot.gyro_forward_speed = robot.gyro_forward_speed * move_scale * cos(robot.yaw_motor->angle() + robot.gyro_forward_angle + angle_offset + robot.cmd.gyro_dir * D2R(120.0f));
       // cos(robot.gyro_forward_angle-angle_offset);
       // 指令角度
       cmd_angle_curr = robot.gyro_forward_angle + robot.imu_datas.euler_vals[YAW] - robot.yaw_motor->angle();
@@ -291,7 +301,7 @@ static void JoystickCmd(void)
       robot.gyro_forward_speed *= robot.sup_cap->get_remain_present();
       robot.cmd.dpos = robot.gyro_forward_speed;
       // robot.cmd.gyro_speed = curr_rc_ptr->rc_lh();
-      robot.cmd.gyro_dir = 1.0f;
+      // robot.cmd.gyro_dir = 1.0f;
 
       // robot.cmd.gyro_speed = 1.0f;
       // robot.cmd.gyro_speed = robot.cmd.gyro_speed * 5.5f;
@@ -312,7 +322,22 @@ static void JoystickCmd(void)
       robot.cmd.yaw_ang -= curr_rc_ptr->rc_rh() * kMaxRotSpeed * kCtrlPeriod;
       robot.cmd.roll_ang = 0;
       break;
+    case STEER_DEFENSE:
+      robot.cmd.gyro_speed = 0;
+      robot.cmd.gyro_dir = 0;
+      // robot.cmd.yaw_ang = 0.0f;
+      if (robot.yaw_motor->angle() > 0)
+      {
+        robot.cmd.yaw_ang = LimDiff(PI / 2, robot.cmd.yaw_ang, kMaxRotSpeed);
+      }
+      else
+      {
+        robot.cmd.yaw_ang = LimDiff(-PI / 2, robot.cmd.yaw_ang, kMaxRotSpeed);
+      }
 
+      vy = -curr_rc_ptr->rc_rh();
+      robot.cmd.dpos = vx * cYaw + vy * sYaw; // 速度合成
+      break;
     default:
       break;
     }
@@ -332,16 +357,19 @@ static void JoystickCmd(void)
 static void LeverCmd(void)
 {
   static bool shoot_flag = false;
-  static bool jump_flag = false;
+  static int jump_flag = 0;
   static bool gimbal_reverse_flag = false; // 云台反向标志位
   static bool steer_mode_change = false;
   static bool auto_jump_flag = false;
   static float32_t wheel_val = 0;
   static int gimbal_reset_count = 20;
   robot.cmd.roll_ang_fix = true; // 默认roll轴角度不可改
-
-  
-
+  static int gyro_dir = kCcwDir;
+  if (jump_flag > 0)
+  {
+    jump_flag--;
+  }
+  robot.cmd.gyro_limit = false;
   switch (curr_rc_ptr->rc_l_switch())
   {
   case remote_control::SwitchState::kSwitchStateUp: // 死亡模式
@@ -351,26 +379,30 @@ static void LeverCmd(void)
     robot.cmd.gimbal_ctrl_mode = GIMBAL_MANUAL;
     robot.cmd.steer_mode_ref = STEER_DEPART;
     gimbal_reset_count = 20;
-    robot.cmd.height = kHeightMin;
+    robot.cmd.height = kCmdHeightMin;
     break;
   case remote_control::SwitchState::kSwitchStateMid: // 运动模式
     robot.cmd.chassis_mode_ref = CHASSIS_MATURE;
     robot.cmd.steer_mode_ref = STEER_MOVE;
     robot.cmd.gimbal_enable = true;
+    robot.cmd.shooter_enable = false;
     robot.cmd.gimbal_ctrl_mode = GIMBAL_AUTO;
-    robot.cmd.shooter_enable = true;
-    robot.cmd.height = kHeightMin;
+    // robot.cmd.shooter_enable = false;
+    // robot.cmd.height = kCmdHeightMin;
     robot.cmd.speed_limit = true;
     switch (curr_rc_ptr->rc_r_switch())
     {
     case remote_control::SwitchState::kSwitchStateDown:
-      robot.cmd.height = kHeightMin;
+      robot.cmd.height -= curr_rc_ptr->rc_wheel() * kCtrlPeriod * 0.35f;
+      LIMIT_MAX(robot.cmd.height, kCmdHeightMin, kCmdHeightMax);
       break;
     case remote_control::SwitchState::kSwitchStateMid:
-      robot.cmd.height = kHeightMid;
+      robot.cmd.speed_limit = false;
+      robot.cmd.height = kCmdHeightMid;
       break;
     case remote_control::SwitchState::kSwitchStateUp:
-      robot.cmd.height = 0.28f;
+      robot.cmd.steer_mode_ref = STEER_GYRO;
+      robot.cmd.gyro_limit = true;
     default:
       break;
     }
@@ -381,31 +413,44 @@ static void LeverCmd(void)
       robot.cmd.gimbal_enable = false;
       robot.cmd.gimbal_ctrl_mode = GIMBAL_MANUAL;
     }
-    switch (curr_rc_ptr->rc_r_switch()) // 自瞄测试
-    {
-    case remote_control::SwitchState::kSwitchStateDown:
-      robot.cmd.auto_shoot = false;
-      robot.cmd.auto_aim_mode = AUTO_AIM_CLOSE;
-      break;
-    case remote_control::SwitchState::kSwitchStateMid:
-      robot.cmd.auto_shoot = false;
-      robot.cmd.auto_aim_mode = PREDICT;
+    // switch (curr_rc_ptr->rc_r_switch()) // 自瞄测试
+    // {
+    // case remote_control::SwitchState::kSwitchStateDown:
+    //   robot.cmd.auto_shoot = false;
+    //   robot.cmd.auto_aim_mode = AUTO_AIM_CLOSE;
+    //   break;
+    // case remote_control::SwitchState::kSwitchStateMid:
+    //   robot.cmd.auto_shoot = false;
+    //   robot.cmd.auto_aim_mode = ANTI_TWIST;
 
-      break;
-    case remote_control::SwitchState::kSwitchStateUp:
-      robot.cmd.auto_shoot = true;
-      robot.cmd.auto_aim_mode = ANTI_TWIST;
-      // robot.comm.chassis2gimbal.auto_aim_mode = ANTI_TWIST;
-      break;
-    default:
-      break;
-    }
+    //   break;
+    // case remote_control::SwitchState::kSwitchStateUp:
+    //   robot.cmd.auto_shoot = false;
+    //   robot.cmd.auto_aim_mode = BIG_BUFF;
+    //   // robot.comm.chassis2gimbal.auto_aim_mode = ANTI_TWIST;
+    //   break;
+    // default:
+    //   break;
+    // }
 #endif
     break;
   case remote_control::SwitchState::kSwitchStateDown: // 躺尸自瞄模式
     gyro_tick = robot.control_tick;
-    robot.cmd.height = kHeightMid;
-    robot.cmd.steer_mode_ref = STEER_GYRO;
+    robot.cmd.steer_mode_ref = STEER_MOVE;
+    robot.cmd.auto_aim_mode = AUTO_AIM_CLOSE;
+    switch (curr_rc_ptr->rc_r_switch())
+    {
+    case remote_control::SwitchState::kSwitchStateDown:
+      robot.cmd.height = 0.19f;
+      break;
+    case remote_control::SwitchState::kSwitchStateMid:
+      robot.cmd.height = kCmdHeightMid;
+      break;
+    case remote_control::SwitchState::kSwitchStateUp:
+      robot.cmd.height = 0.28f;
+    default:
+      break;
+    }
 #ifdef MINIPC_debug
     robot.cmd.chassis_mode_ref = CHASSIS_DEAD;
     robot.cmd.steer_mode_ref = STEER_DEPART;
@@ -417,13 +462,15 @@ static void LeverCmd(void)
       break;
     case remote_control::SwitchState::kSwitchStateMid:
       robot.cmd.auto_shoot = false;
-      robot.cmd.auto_aim_mode = PREDICT;
+      //  robot.cmd.auto_aim_mode = SMALL_BUFF ;
+      robot.cmd.auto_aim_mode = ANTI_TWIST;
 
       break;
     case remote_control::SwitchState::kSwitchStateUp:
       robot.cmd.auto_shoot = true;
+      //  robot.cmd.auto_aim_mode = SMALL_BUFF ;
+      // robot.cmd.auto_aim_mode = BIG_BUFF;
       robot.cmd.auto_aim_mode = ANTI_TWIST;
-      // robot.comm.chassis2gimbal.auto_aim_mode = ANTI_TWIST;
       break;
     default:
       break;
@@ -436,11 +483,54 @@ static void LeverCmd(void)
     gimbal_reset_count = 20;
 #ifdef fly_debug
     robot.cmd.steer_mode_ref = STEER_MOVE;
-    // robot.cmd.speed_limit = false;
-    if (last_rc_ptr->rc_l_switch() != curr_rc_ptr->rc_l_switch() && (robot.comm.chassis2gimbal.reverse_seq == robot.comm.gimbal2chassis.reverse_finish_seq))
+    robot.cmd.speed_limit = false;
+
+    switch (curr_rc_ptr->rc_r_switch())
     {
-      robot.cmd.gimbal_reverse_seq++;
+    case remote_control::SwitchState::kSwitchStateUp:
+      robot.cmd.auto_jump = true;
+      robot.cmd.height = kJumpHeightMin;
+      robot.cmd.speed_limit = true;
+      if (!jump_flag)
+      {
+        if (robot.detect_states.close2obs)
+        {
+          robot.cmd.chassis_mode_ref = CHASSIS_JUMP;
+          jump_flag = 5000;
+        }
+      }
+      else if (jump_flag)
+      {
+        robot.cmd.height = kCmdHeightMid;
+      }
+      break;
+      // if(!jump_flag)
+      //  { robot.cmd.chassis_mode_ref = CHASSIS_JUMP;
+      //   jump_flag = true;}
+      // else if(jump_flag){
+      //   robot.cmd.height = kCmdHeightMid;
+      // }
+      // break;
+
+    case remote_control::SwitchState::kSwitchStateMid:
+      robot.cmd.chassis_mode_ref = CHASSIS_MATURE;
+      jump_flag = 0;
+      robot.cmd.auto_jump = false;
+      robot.cmd.height = kCmdHeightMin + 0.03f;
+      robot.cmd.auto_shoot = false;
+      robot.cmd.auto_aim_mode = PREDICT;
+
+      break;
+    case remote_control::SwitchState::kSwitchStateDown:
+      robot.cmd.chassis_mode_ref = CHASSIS_MATURE;
+      robot.cmd.height = kCmdHeightMid;
+    default:
+      break;
     }
+    // if (last_rc_ptr->rc_l_switch() != curr_rc_ptr->rc_l_switch() && (robot.comm.chassis2gimbal.reverse_seq == robot.comm.gimbal2chassis.reverse_finish_seq))
+    // {
+    //   robot.cmd.gimbal_reverse_seq++;
+    // }
 #endif
 
     break;
@@ -452,7 +542,7 @@ static void LeverCmd(void)
   robot.cmd.shoot = false;
   if (robot.cmd.shooter_enable)
   {
-    if (curr_rc_ptr->rc_wheel() > 8.0f)
+    if (curr_rc_ptr->rc_wheel() < -0.9f)
     {
       shoot_count++;
       switch (curr_rc_ptr->rc_r_switch())
@@ -464,10 +554,9 @@ static void LeverCmd(void)
         }
         break;
       case remote_control::SwitchState::kSwitchStateUp:
-        if (shoot_count % 100 == 0)
-        {
-          robot.cmd.shoot = true;
-        }
+
+        robot.cmd.shoot = true;
+
       default:
         break;
       }
@@ -480,10 +569,10 @@ static void LeverCmd(void)
   //   switch (curr_rc_ptr->rc_r_switch())
   // {
   // case remote_control::SwitchState::kSwitchStateDown:
-  //   robot.cmd.height = kHeightMin;
+  //   robot.cmd.height = kCmdHeightMin;
   //   break;
   // case remote_control::SwitchState::kSwitchStateMid:
-  //   robot.cmd.height = kHeightMid;
+  //   robot.cmd.height = kCmdHeightMid;
   //   break;
   // case remote_control::SwitchState::kSwitchStateUp:
   //   robot.cmd.height = 0.28f;
@@ -513,15 +602,19 @@ static void LeverCmd(void)
 static void KeyMouseCmd(void)
 {
   static uint16_t auto_mode_close_count = 0; // 切出自瞄计时
-  static bool auto_jump_flag = false;
-
+  static int auto_jump_flag = false;
+  static bool manual_jump_flag = false;
   robot.cmd.speed_limit = true;
   robot.cmd.auto_shoot = false;
 
-  /* CTRL + SHIFT + _ */
-  if (curr_rc_ptr->key_CTRL() && curr_rc_ptr->key_SHIFT(false))
+  if (auto_jump_flag > 0)
   {
+    auto_jump_flag--;
+  }
 
+  /* CTRL + SHIFT + _ */
+  if (curr_rc_ptr->key_CTRL() && curr_rc_ptr->key_SHIFT())
+  {
     if (curr_rc_ptr->key_B(true))
     { // CTRL + SHIFT + B: 进入RECOVERY中的微调
       curr_rc_ptr->key_CTRL();
@@ -532,7 +625,15 @@ static void KeyMouseCmd(void)
       robot.cmd.steer_mode_ref = STEER_MOVE;
       robot.cmd.gimbal_enable = true;
       robot.cmd.shooter_enable = true;
-      robot.cmd.height = kHeightMin; // 最低腿长
+      robot.cmd.height = kCmdHeightMin; // 最低腿长
+    }
+    else if (curr_rc_ptr->key_D())
+    {
+      robot.cmd.chassis_mode_ref = CHASSIS_DEAD;
+      robot.cmd.steer_mode_ref = STEER_DEPART;
+      robot.cmd.gimbal_ctrl_mode = GIMBAL_AUTO;
+      robot.cmd.gimbal_enable = true;
+      robot.cmd.shooter_enable = true;
     }
     if (curr_rc_ptr->key_Z())
     {
@@ -552,10 +653,32 @@ static void KeyMouseCmd(void)
       robot.comm.judge2gimbal.infantry_types.type_4 = BALANCE_INFANTRY;
       robot.comm.judge2gimbal.infantry_types.type_5 = NORMAL_INFANTRY;
     }
-    else if(curr_rc_ptr->key_V()){
+    else if (curr_rc_ptr->key_V())
+    {
       robot.comm.judge2gimbal.infantry_types.type_3 = NORMAL_INFANTRY;
       robot.comm.judge2gimbal.infantry_types.type_4 = NORMAL_INFANTRY;
       robot.comm.judge2gimbal.infantry_types.type_5 = BALANCE_INFANTRY;
+    }
+    robot.cmd.auto_jump = false;
+    if (curr_rc_ptr->key_W())
+    {
+      robot.cmd.auto_jump = true;
+      robot.cmd.height = kJumpHeightMin;
+
+      robot.cmd.speed_limit = true;
+      if (!auto_jump_flag)
+      {
+        if (robot.detect_states.close2obs)
+        {
+          robot.cmd.chassis_mode_ref = CHASSIS_JUMP;
+          auto_jump_flag = 5000;
+        }
+      }
+      else
+      {
+        robot.cmd.height = kCmdHeightMid;
+        robot.cmd.auto_jump = false;
+      }
     }
   }
   // else if (curr_rc_ptr->key_B(true)) {// CTRL + SHIFT + B: minipc关机
@@ -563,16 +686,6 @@ static void KeyMouseCmd(void)
   // } else if (curr_rc_ptr->key_R(true)) {// CTRL + SHIFT + R: minipc重启
   //     robot.cmd.auto_aim_mode = MINIPC_REBOOT;
   // }
-
-  // if (curr_rc_ptr->key_W(true)) {
-  //     if (!auto_jump_flag) {
-  //         auto_jump_flag = true;
-  //         robot.cmd.auto_jump = true;
-  //     }
-  // } else {
-  //     auto_jump_flag = false;
-  // }
-
 
   /* CTRL + _ */
   if (curr_rc_ptr->key_CTRL() && !curr_rc_ptr->key_SHIFT())
@@ -592,34 +705,42 @@ static void KeyMouseCmd(void)
       robot.cmd.steer_mode_ref = STEER_MOVE;
       robot.cmd.gimbal_ctrl_mode = GIMBAL_AUTO;
       robot.cmd.gimbal_enable = true;
-      robot.cmd.height = kHeightMin; // 最低腿长
+      robot.cmd.height = kCmdHeightMid; // 中等腿长
       robot.cmd.shooter_enable = true;
     }
     else if (curr_rc_ptr->key_G(true))
     { // CTRL + G: 重画UI
       robot.cmd.ui_redraw = true;
     }
+    if (curr_rc_ptr->key_R())
+    {
+      manual_jump_flag = true;
+      robot.cmd.height = kCmdHeightMin;
+      move_scale = kAutoJumpSpeed;
+    }
 
     if (robot.chassis_mode.curr != CHASSIS_JUMP)
     {
       if (curr_rc_ptr->key_Z(true))
       {
-        robot.cmd.height = kHeightMin; // CTRL + Z: 最低腿长
+        robot.cmd.height = kCmdHeightMin; // CTRL + Z: 最低腿长
       }
       else if (curr_rc_ptr->key_X(true))
       {
-        robot.cmd.height = kHeightMid; // CTRL + X: 中等腿长
+        robot.cmd.height = kCmdHeightMid; // CTRL + X: 中等腿长
       }
-      else if (curr_rc_ptr->key_C(true))
+      // else if (curr_rc_ptr->key_C(true))
+      // {
+      //   robot.cmd.height = kCmdHeightMax; // CTRL + C: 最高腿长
+      // }
+      else if (curr_rc_ptr->key_W() && !manual_jump_flag)
       {
-        robot.cmd.height = kHeightMax; // CTRL + C: 最高腿长
-      }
-      else if (curr_rc_ptr->key_W(true))
-      {
+        curr_rc_ptr->key_W(true);
         robot.cmd.height = LimDiff(kHeightMax, robot.cmd.height, kHeightAdjDiff); // CTRL + W: 调高腿长
       }
-      else if (curr_rc_ptr->key_S(true))
+      else if (curr_rc_ptr->key_S() && !manual_jump_flag)
       {
+        curr_rc_ptr->key_S(true);
         robot.cmd.height = LimDiff(kHeightMin, robot.cmd.height, kHeightAdjDiff); // CTRL + S: 调低腿长
       }
     }
@@ -636,7 +757,7 @@ static void KeyMouseCmd(void)
     robot.cmd.speed_limit = false;
     if (curr_rc_ptr->key_W() || curr_rc_ptr->key_S())
     {
-      robot.cmd.height = kHeightMid;
+      robot.cmd.height = kCmdHeightMid;
       // robot.cmd.speed_limit = false;
     }
 
@@ -683,19 +804,25 @@ static void KeyMouseCmd(void)
     robot.cmd.speed_limit = true;
   }
 
+  if ((!curr_rc_ptr->key_R() || !curr_rc_ptr->key_CTRL()) && manual_jump_flag)
+  {
+    robot.cmd.chassis_mode_ref = CHASSIS_JUMP;
+    manual_jump_flag = false;
+  }
+
   // 单键控制部分
   if (curr_rc_ptr->key_R())
   {
     // robot.cmd.gimbal_reverse_seq = robot.comm.gimbal2chassis.reverse_finish_seq;
     robot.cmd.steer_mode_ref = STEER_MOVE; // R: 进入MOVE模式
     robot.cmd.gimbal_ctrl_mode = GIMBAL_AUTO;
-
   }
   else if (curr_rc_ptr->key_E())
   {
     // robot.cmd.gimbal_reverse_seq = robot.comm.gimbal2chassis.reverse_finish_seq;
     robot.cmd.steer_mode_ref = STEER_GYRO; // E: 进入GYRO模式
     robot.cmd.gimbal_ctrl_mode = GIMBAL_AUTO;
+    robot.cmd.height = kGyroHeightMin;
     robot.cmd.shooter_enable = true;
   }
   else if (curr_rc_ptr->key_Q())
@@ -720,6 +847,30 @@ static void KeyMouseCmd(void)
   else
   {
     robot.cmd.ignore_overheated = false;
+  }
+
+  robot.cmd.auto_aim_mode = AUTO_AIM_CLOSE;
+  if (robot.cmd.gimbal_ctrl_mode == GIMBAL_AUTO)
+  {
+    if (curr_rc_ptr->key_X())
+    {
+      robot.cmd.auto_aim_mode = SMALL_BUFF;
+      robot.cmd.auto_shoot = curr_rc_ptr->mouse_r_btn(false);
+    }
+    else if (curr_rc_ptr->key_C())
+    {
+      robot.cmd.auto_aim_mode = BIG_BUFF;
+      robot.cmd.auto_shoot = curr_rc_ptr->mouse_r_btn(false);
+    }
+    else if (curr_rc_ptr->mouse_r_btn(false))
+    {
+      robot.cmd.auto_aim_mode = ANTI_TWIST;
+      robot.cmd.auto_shoot = false;
+      if (curr_rc_ptr->key_Z() || curr_rc_ptr->key_SHIFT())
+      {
+        robot.cmd.auto_shoot = true;
+      }
+    }
   }
 
   /* 根据底盘模式生成指令 */
@@ -766,7 +917,7 @@ static void KeyMouseCmd(void)
       {
         vx = -move_scale;
       }
-      else if ((curr_rc_ptr->key_A() || curr_rc_ptr->key_D())&&!curr_rc_ptr->key_SHIFT()&&!curr_rc_ptr->key_SHIFT())
+      else if ((curr_rc_ptr->key_A() || curr_rc_ptr->key_D()) && !curr_rc_ptr->key_SHIFT() && !curr_rc_ptr->key_SHIFT())
       {
         robot.cmd.steer_mode_ref = STEER_DEFENSE;
       }
@@ -794,11 +945,11 @@ static void KeyMouseCmd(void)
         robot.cmd.steer_mode_ref = STEER_MOVE;
       }
 
-      if (curr_rc_ptr->key_A()&&!curr_rc_ptr->key_SHIFT()&&!curr_rc_ptr->key_SHIFT())
+      if (curr_rc_ptr->key_A())
       {
         vy = move_scale;
       }
-      else if (curr_rc_ptr->key_D()&&!curr_rc_ptr->key_SHIFT()&&!curr_rc_ptr->key_SHIFT())
+      else if (curr_rc_ptr->key_D())
       {
         vy = -move_scale;
       }
@@ -807,28 +958,28 @@ static void KeyMouseCmd(void)
     case STEER_GYRO:
       /* 根据底盘原始旋转方向选择陀螺方向 */
       // //测试滞后用
-      // if (robot.cmd.gyro_dir == 0)
-      // {
-      //   if (robot.chassis_states.yaw_omg > 0)
-      //   {
-      //     robot.cmd.gyro_dir = kCcwDir;
-      //   }
-      //   else
-      //   {
-      //     robot.cmd.gyro_dir = kCwDir;
-      //   }
-      // }
+      if (robot.cmd.gyro_dir == 0)
+      {
+        if (robot.chassis_states.yaw_omg > 0)
+        {
+          robot.cmd.gyro_dir = kCcwDir;
+        }
+        else
+        {
+          robot.cmd.gyro_dir = kCwDir;
+        }
+      }
       // robot.cmd.dpos = cos((robot.control_tick-gyro_tick)/1000.0f*kGyrospeed)*1.8f;
       // ANGLE_ACROSS0_HANDLE_RAD(robot.cmd.yaw_ang, 0);
 
       // return ;
-      robot.cmd.gyro_dir = kCcwDir;
+      // robot.cmd.gyro_dir = kCcwDir;
 
       float32_t vx, vy;
       vx = (curr_rc_ptr->key_W() - curr_rc_ptr->key_S()) * 1.0f;
       vy = (curr_rc_ptr->key_A() - curr_rc_ptr->key_D()) * 1.0f;
       robot.gyro_forward_angle = atan2(vy, vx);
-      gyro_speed_forw = LimDiff((vx * vx + vy * vy) / 2.5, gyro_speed_forw, kMaxGyroForwardAcc);
+      gyro_speed_forw = LimDiff((vx * vx + vy * vy) / 1.8, gyro_speed_forw, kMaxGyroForwardAcc);
       if (robot.steer_mode.ref != STEER_GYRO || fabs(gyro_speed_forw) > 0.1f)
       {
         robot.cmd.gyro_speed = LimDiff(robot.sup_cap->get_remain_present() * kMinGyroSpeed, robot.cmd.gyro_speed, kMaxGyroAcc);
@@ -841,7 +992,7 @@ static void KeyMouseCmd(void)
       // robot.gyro_forward_speed = robot.gyro_forward_speed * move_scale
       // * cos(angle_offset + 0.21f + cmd_angle_curr - robot.gyro_forward_angle + robot.chassis_states.yaw_ang);
 
-      robot.gyro_forward_speed = gyro_speed_forw * move_scale * cos(robot.yaw_motor->angle() + robot.gyro_forward_angle + angle_offset + D2R(120.0f));
+      robot.gyro_forward_speed = gyro_speed_forw * move_scale * cos(robot.yaw_motor->angle() + robot.gyro_forward_angle + angle_offset + robot.cmd.gyro_dir * D2R(120.0f));
       // cos(robot.gyro_forward_angle-angle_offset);
       // 指令角度
       cmd_angle_curr = robot.gyro_forward_angle + robot.imu_datas.euler_vals[YAW] - robot.yaw_motor->angle();
@@ -865,7 +1016,7 @@ static void KeyMouseCmd(void)
       robot.gyro_forward_speed *= robot.sup_cap->get_remain_present();
       robot.cmd.dpos = robot.gyro_forward_speed;
       // robot.cmd.gyro_speed = curr_rc_ptr->rc_lh();
-      robot.cmd.gyro_dir = 1.0f;
+      // robot.cmd.gyro_dir = 1.0f;
       // robot.cmd.gyro_speed = 1.0f;
       // robot.cmd.gyro_speed = robot.cmd.gyro_speed * 5.5f;
 
@@ -922,7 +1073,7 @@ static void KeyMouseCmd(void)
     break;
   case CHASSIS_DEAD:
     robot.cmd.dpos = 0;
-    robot.cmd.height = kHeightMin;
+    robot.cmd.height = kCmdHeightMin;
     robot.cmd.yaw_ang = robot.chassis_states.yaw_ang;
     robot.cmd.recovery_tune = false;
     break;
@@ -943,24 +1094,13 @@ static void KeyMouseCmd(void)
   robot.cmd.gimbal_y = -curr_rc_ptr->mouse_y() / kMouseMoveLim;
   LIMIT_MAX(robot.cmd.gimbal_x, 1, -1);
   LIMIT_MAX(robot.cmd.gimbal_y, 1, -1);
-  robot.cmd.auto_aim_mode = AUTO_AIM_CLOSE;
-  if (robot.comm.chassis2gimbal.gimbal_ctrl_mode == GIMBAL_AUTO)
-  {
-    if (curr_rc_ptr->mouse_r_btn(false))
-    {
-      robot.cmd.auto_aim_mode = ANTI_TWIST;
-      robot.cmd.auto_shoot = false;
-      if (curr_rc_ptr->key_Z())
-      {
-        robot.cmd.auto_shoot = true;
-      }
-    }
-  }
+
   robot.cmd.shoot = false;
 
   if (curr_rc_ptr->mouse_l_btn(false) && robot.control_tick % 80 == 0)
   {
-    if(robot.referee_ptr->PERFORMANCE->getData().power_management_shooter_output){
+    if (robot.referee_ptr->PERFORMANCE->getData().power_management_shooter_output)
+    {
       robot.cmd.shooter_enable = true;
     }
     robot.cmd.shoot = true;
@@ -1052,23 +1192,18 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     HAL_UARTEx_ReceiveToIdle_DMA(&huart1, referee_rx_data, robot.referee_ptr->get_rx_dma_len());
     return;
   }
-}
-
-/**
- * @brief       compute polynomial
- * @param       *p: ptr to array of polynomial coefficient
- * @param       x: independent variable
- * @param       n: highest power of polynomial
- * @retval      None
- * @note        polynomial power from n to 0
- */
-static float PolyVal(const float *p, float x, uint8_t n)
-{
-  float result = 0;
-  for (uint8_t i = 0; i <= n; i++)
+  if (huart == &huart7)
   {
-    result = result * x + p[i];
+    robot.dist_measurement[FRONT]->decode(dist_measure_rx_data_Front, Size, huart);
+    robot.dist_measurement[BEHIND]->decode(dist_measure_rx_data_Front, Size, huart);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart7, dist_measure_rx_data_Front, 1024);
+    return;
   }
-
-  return result;
+  if (huart == &huart10)
+  {
+    robot.dist_measurement[BEHIND]->decode(dist_measure_rx_data_Back, Size, huart);
+    robot.dist_measurement[FRONT]->decode(dist_measure_rx_data_Back, Size, huart);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart10, dist_measure_rx_data_Back, 1024);
+    return;
+  }
 }

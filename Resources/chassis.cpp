@@ -24,7 +24,7 @@
 #include "chassis_music.hpp"
 #include "tim.h"
 BalanceRobot_t robot; // 底盘结构体
-
+int debug_num = 0;
 /**
  * @brief      机器人结构体初始化
  * @retval      None
@@ -53,8 +53,11 @@ void RobotInit(void)
     {
         memcpy(robot.leg_states[i].ref.data, kRefState, sizeof(LegState_u));
         memcpy(robot.leg_states[i].curr.data, kRefState, sizeof(LegState_u));
+        memcpy(robot.leg_states_estimate[i].data, kRefState, sizeof(LegState_u));
+        
     }
-
+    robot.dpos_filter[LEFT] = robot.dpos_filter[RIGHT] = 0;
+    robot.joint_ang_cal_flag = false;
     // 五连杆解算函数初始化
     FiveRodsInit(&robot.five_rods_cal, kJointMotorsDis, kThighLen, kLegLen);
 
@@ -66,13 +69,17 @@ void RobotInit(void)
     robot.chassis_states.dist2obs[0] = robot.chassis_states.dist2obs[1] = 100.0f;
 
     robot.detect_states.abnormal = false;
-    robot.detect_states.on_ground = true;
+    robot.detect_states.on_ground[0] = true;
+    robot.detect_states.on_ground[1] = true;
+    robot.detect_states.on_ground[2] = true;
+
     robot.detect_states.close2obs = false;
     robot.detect_states.low_battery = false;
     
     memset(&robot.imu_datas, 0, sizeof(ImuDatas_t));
 
     robot.control_tick = 0;
+    robot.gimbal_comm_tick = 0;
 
     ChassisGimbalCommInit(&robot.comm);
 
@@ -101,4 +108,7 @@ void RobotInit(void)
 
     // robot.ui_drawer = new UiDrawer();
     robot.ui_drawer = new Referee(default_ui_init_data);
+
+    robot.dist_measurement[FRONT] = new dist_measure(&huart7);
+    robot.dist_measurement[BEHIND] = new dist_measure(&huart10);
 }

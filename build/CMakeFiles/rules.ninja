@@ -64,8 +64,10 @@ rule CXX_COMPILER__h7_test.2eelf_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__h7_test.2eelf_Debug
-  command = cmd.exe /C "$PRE_LINK && X:\gcc\arm\bin\arm-none-eabi-g++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = cmd.exe /C "$PRE_LINK && X:\gcc\arm\bin\arm-none-eabi-g++.exe $FLAGS $LINK_FLAGS @$RSP_FILE -o $TARGET_FILE  && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
+  rspfile = $RSP_FILE
+  rspfile_content = $in $LINK_PATH $LINK_LIBRARIES
   restat = $RESTAT
 
 
@@ -81,7 +83,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = X:\Cmake\bin\cmake.exe --regenerate-during-build -S"X:\Hello World\2024\Code\Chassis_H7" -B"X:\Hello World\2024\Code\Chassis_H7\build"
+  command = X:\Cmake\bin\cmake.exe --regenerate-during-build -S"X:\Hello World\2024\Code\Standard-Balance-Chassis-2024" -B"X:\Hello World\2024\Code\Standard-Balance-Chassis-2024\build"
   description = Re-running CMake...
   generator = 1
 

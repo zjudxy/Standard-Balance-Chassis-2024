@@ -131,4 +131,36 @@ static inline int8_t GetSign(float val)
     return val > 0 ? 1 : -1;
 }
 
+
+/**
+ * @brief       compute polynomial
+ * @param       *p: ptr to array of polynomial coefficient
+ * @param       x: independent variable
+ * @param       n: highest power of polynomial
+ * @retval      None
+ * @note        polynomial power from n to 0
+ */
+static float PolyVal(const float *p, float x, uint8_t n)
+{
+    float result = 0;
+    for (uint8_t i = 0; i <= n; i++)
+    {
+        result = result * x + p[i];
+    }
+
+    return result;
+}
+
+/**
+ * @brief       compute polynomial
+ * @param       *p: ptr to array of polynomial coefficient
+ * @param       *x: independent variable array
+ * @param       *n: highest power of polynomial
+ * @retval      None
+ * @note        polynomial power from n to 0
+ */
+static float MultiPolyVal(const float *p, float *x, uint8_t* n)
+{
+    return 0;
+}
 #endif /* __TOOLS_H_ */

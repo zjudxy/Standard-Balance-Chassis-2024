@@ -25,10 +25,14 @@
 
 // 唯一ID
 const uint8_t kAutoShootRectangle[3] = {'1', '0', '1'};
-const uint8_t kAutoShootNum[8][3] = {{'1', '0', '2'}, {'1', '0', '3'}, {'1', '0', '4'}, {'1', '0', '5'}, {'1', '0', '6'}, {'1', '0', '7'}, {'1', '0', '8'}, {'1', '0', '9'}};
+const uint8_t kAutoShootTargetRectangle[3] = {'1', '0', '2'};
 
 const uint8_t kSuperCapVerticalLine[3] = {0x02, 0, 0x01};
 const uint8_t kSuperCapPercentage[3] = {0x02, 0, 0x02};
+
+const uint8_t kRobotBoundLine[2][3] = {{0x02, 0, 0x03}, {0x02, 0, 0x04}};
+
+const uint8_t kBalance_num_retangle[3] = {0x03, 0, 0x05};
 
 const uint8_t kMiddleVerticalLine[3] = {0x03, 0, 0x01};
 const uint8_t kMiddleHorizital1[3] = {0x03, 0, 0x02};
@@ -41,14 +45,15 @@ const uint8_t kLegHeightline[5][3] = {0x04, 0, 0x05, 0x04, 0, 0x06, 0x04, 0, 0x0
 const uint8_t kForwardLine[3] = {0x05, 0, 0x01};                                                                  // 枪口固定线
 const uint8_t kLegHeightCurr[2][3] = {0x05, 0, 0x02, 0x05, 0, 0x03};                                              // 腿部高度线
 const uint8_t kAttackRetangle[3][3] = {{0x05, 0, 0x04}, {0x05, 0, 0x05}, {0x05, 0, 0x06}};                        // 受击打图形
+const uint8_t kAttackArch[2][3] = {{0x05, 0, 0x07}, {0x05, 0, 0x08}};                                             // 受击打图形
 
-const uint8_t kString[5][3] = {0x06, 0, 0x01, 0x06, 0, 0x02, 0x06, 0, 0x03, 0x06, 0, 0x04, 0x06, 0, 0x05};        // 字符串
+const uint8_t kString[6][3] = {0x06, 0, 0x01, 0x06, 0, 0x02, 0x06, 0, 0x03, 0x06, 0, 0x04, 0x06, 0, 0x05, 0x06, 0, 0x06}; // 字符串
 
 /* Private constants ---------------------------------------------------------*/
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
-UiInitData default_ui_init_data = {
+const UiInitData default_ui_init_data = {
     .middle_vertical_line = {960, 540, 960, 300},
     .front_7m_height = 500,
     .front_7m_half_length = 15,
@@ -57,8 +62,11 @@ UiInitData default_ui_init_data = {
     .front_3m_height = 360,
     .front_3m_half_length = 5,
 
-    .auto_shoot_edge = {600, 600, 1400, 900},
-    .auto_shoot_target_num = {{1500, 850, 30}, {1540, 850, 30}, {1580, 850, 30}, {1620, 850, 30}, {1660, 850, 30}, {1700, 850, 30}, {1740, 850, 30}, {1780, 850, 30}},
+    .auto_shoot_edge = {700, 350, 1200, 600},
+    .auto_shoot_target_Rect_size = {25, 25},
+
+    .robot_bound_line_left = {580, 40, 725, 230},
+    .robot_bound_line_right = {1340, 40, 1195, 230},
 
     .super_cap_vertical_line = {820, 100, 1100, 100},
     .super_cap_horizontal_line_half_length = 4,
@@ -68,6 +76,9 @@ UiInitData default_ui_init_data = {
 
     .leg_height_line_start = {1150, 50, 1150 + 140, 50 + 150},
 
+    .attack_arch = {960, 540},
+    .attack_arch_radius = {150, 150},
+
     .attack_string_size = 20,
     .base_attack_pos = {600, 780},
     .hero_attack_pos = {700, 780},
@@ -76,6 +87,10 @@ UiInitData default_ui_init_data = {
     .mode_string_size = 30,
     .chassis_mode_string_pos = {60, 700},
     .steer_mode_string_pos = {60, 600},
+    .balance_num_string_pos = {60, 800},
+
+    .balance_num_pos = {60, 500},
+    .minipc_states_pos = {200, 500},
 
     .refresh_times = 0,
     .hurt_refresh_interval = 0,
@@ -101,7 +116,7 @@ void Rotation(int16_t line[4], int16_t center[2], float angle, int16_t rotated_l
     rotated_line[2] = x2 * cos(angle) - y2 * sin(angle) + center[0];
     rotated_line[3] = x2 * sin(angle) + y2 * cos(angle) + center[1];
 }
-//超电 准星线 自瞄目标1
+// 超电 准星线 自瞄目标1
 void Referee::uiAddComponents1(referee::InterGraphic7Package *pkg)
 {
     // 中心准星竖线
@@ -145,22 +160,15 @@ void Referee::uiAddComponents1(referee::InterGraphic7Package *pkg)
     super_cap_rectangle.setEndPos(ui_init_data_.super_cap_vertical_line[2], ui_init_data_.super_cap_vertical_line[3] + 15);
     super_cap_rectangle.setLineWidth(4);
 
-    // 自瞄目标1的
-    referee::Integer auto_shoot_target1(kAutoShootNum[0],
-                                        referee::Graphic::Operation::kGraphicAdd,
-                                        referee::Graphic::Layer::kGraphicLayer0,
-                                        referee::Graphic::Color::kColorWhite,
-                                        ui_init_data_.auto_shoot_target_num[0][0], ui_init_data_.auto_shoot_target_num[0][1],
-                                        ui_init_data_.auto_shoot_target_num[0][2], 1);
+    // 自瞄目标框
+    referee::Rectangle auto_shoot_target_rect(kAutoShootTargetRectangle,
+                                              referee::Graphic::Operation::kGraphicAdd,
+                                              referee::Graphic::Layer::kGraphicLayer0,
+                                              referee::Graphic::Color::kColorWhite);
+    auto_shoot_target_rect.setStartPos(ui_init_data_.auto_shoot_target_Rect_size[0], ui_init_data_.auto_shoot_target_Rect_size[1]);
+    auto_shoot_target_rect.setEndPos(ui_init_data_.auto_shoot_target_Rect_size[0] + 40, ui_init_data_.auto_shoot_target_Rect_size[1] + 40);
+    auto_shoot_target_rect.setLineWidth(0);
 
-    if (ui_components_.auto_shoot_target_list & (1 << 0))
-    {
-        auto_shoot_target1.setColor(referee::Graphic::Color::kColorPink);
-    }
-    if (ui_components_.auto_shoot_target_id == 1)
-    {
-        auto_shoot_target1.setColor(referee::Graphic::Color::kColorGreen);
-    }
     // 超电百分比实际值
     referee::StraightLine super_cap_percentage(kSuperCapPercentage,
                                                referee::Graphic::Operation::kGraphicAdd,
@@ -177,43 +185,33 @@ void Referee::uiAddComponents1(referee::InterGraphic7Package *pkg)
     pkg->setStraightLineAt(middle_horizotal2, 2);
     pkg->setStraightLineAt(middle_horizotal3, 3);
     pkg->setRectangleAt(super_cap_rectangle, 4);
-    pkg->setIntegerAt(auto_shoot_target1, 5);
+    pkg->setRectangleAt(auto_shoot_target_rect, 5);
     pkg->setStraightLineAt(super_cap_percentage, 6);
 }
 
-//自瞄目标圈2-8
+// 车道线
 void Referee::uiAddComponents2(referee::InterGraphic7Package *pkg)
 {
-    // 自瞄目标圆圈2-8
-    for (size_t id = 1; id < 8; id++)
-    {
-        referee::Integer target_num(kAutoShootNum[id],
-                                    referee::Graphic::Operation::kGraphicAdd,
-                                    referee::Graphic::Layer::kGraphicLayer0,
-                                    referee::Graphic::Color::kColorWhite, ui_init_data_.auto_shoot_target_num[id][0], ui_init_data_.auto_shoot_target_num[id][1],
-                                    ui_init_data_.auto_shoot_target_num[id][2], (uint32_t)(id + 1));
+    referee::StraightLine robot_bound_line_left(kRobotBoundLine[0],
+                                                referee::Graphic::Operation::kGraphicAdd,
+                                                referee::Graphic::Layer::kGraphicLayer0,
+                                                referee::Graphic::Color::kColorOrange);
+    robot_bound_line_left.setStartPos(ui_init_data_.robot_bound_line_left[0][0], ui_init_data_.robot_bound_line_left[0][1]);
+    robot_bound_line_left.setEndPos(ui_init_data_.robot_bound_line_left[1][0], ui_init_data_.robot_bound_line_left[1][1]);
+    robot_bound_line_left.setLineWidth(2);
 
-        // referee::Circle auto_shoot_target(kAutoShootNum[id],
-        // referee::Graphic::Operation::kGraphicAdd,
-        // referee::Graphic::Layer::kGraphicLayer0,
-        // referee::Graphic::Color::kColorWhite,
-        // ui_init_data_.auto_shoot_target_num[id][0],ui_init_data_.auto_shoot_target_num[id][1],
-        // ui_init_data_.auto_shoot_target_num[id][2],5);
-        // auto_shoot_target.setCenterPos(ui_init_data_.auto_shoot_target_num[id][0],ui_init_data_.auto_shoot_target_num[id][1]);
-        // auto_shoot_target.setRadius(ui_init_data_.auto_shoot_target_num[id][2]);
-        // auto_shoot_target.setLineWidth(5);
-        if (ui_components_.auto_shoot_target_list & (1 << id))
-        {
-            target_num.setColor(referee::Graphic::Color::kColorPink);
-        }
-        if (ui_components_.auto_shoot_target_id == id)
-        {
-            target_num.setColor(referee::Graphic::Color::kColorGreen);
-        }
-        pkg->setIntegerAt(target_num, id - 1);
-    }
+    referee::StraightLine robot_bound_line_right(kRobotBoundLine[1],
+                                                 referee::Graphic::Operation::kGraphicAdd,
+                                                 referee::Graphic::Layer::kGraphicLayer0,
+                                                 referee::Graphic::Color::kColorOrange);
+    robot_bound_line_right.setStartPos(ui_init_data_.robot_bound_line_right[0][0], ui_init_data_.robot_bound_line_right[0][1]);
+    robot_bound_line_right.setEndPos(ui_init_data_.robot_bound_line_right[1][0], ui_init_data_.robot_bound_line_right[1][1]);
+    robot_bound_line_right.setLineWidth(2);
+
+    pkg->setStraightLineAt(robot_bound_line_left, 0);
+    pkg->setStraightLineAt(robot_bound_line_right, 1);
 }
-
+// 车身状态
 void Referee::uiAddComponents3(referee::InterGraphic7Package *pkg)
 {
 
@@ -291,8 +289,7 @@ void Referee::uiAddComponents3(referee::InterGraphic7Package *pkg)
     pkg->setStraightLineAt(Right_leg_height_curr, 6);
 }
 
-
-//身体位置和腿长线
+// 身体位置和腿长线
 void Referee::uiAddComponents4(referee::InterGraphic7Package *pkg)
 {
 
@@ -342,14 +339,31 @@ void Referee::uiAddComponents4(referee::InterGraphic7Package *pkg)
     LegHeightline5.setEndPos(end_x, start_y + err_y * 4);
     LegHeightline5.setLineWidth(2);
 
+    referee::Rectangle AutoShootRectangle(kAutoShootRectangle,
+                                          referee::Graphic::Operation::kGraphicAdd,
+                                          referee::Graphic::Layer::kGraphicLayer0,
+                                          referee::Graphic::Color::kColorGreen);
+    AutoShootRectangle.setStartPos(ui_init_data_.auto_shoot_edge[0], ui_init_data_.auto_shoot_edge[1]);
+    AutoShootRectangle.setEndPos(ui_init_data_.auto_shoot_edge[2], ui_init_data_.auto_shoot_edge[3]);
+    AutoShootRectangle.setLineWidth(4);
+
+    referee::Integer Balance_num(kBalance_num_retangle,
+                                 referee::Graphic::Operation::kGraphicAdd,
+                                 referee::Graphic::Layer::kGraphicLayer0,
+                                 referee::Graphic::Color::kColorGreen,
+                                 ui_init_data_.balance_num_pos[0], ui_init_data_.balance_num_pos[1],
+                                 10, 0);
+
     pkg->setStraightLineAt(LegHeightline1, 0);
     pkg->setStraightLineAt(LegHeightline2, 1);
     pkg->setStraightLineAt(LegHeightline3, 2);
     pkg->setStraightLineAt(LegHeightline4, 3);
     pkg->setStraightLineAt(LegHeightline5, 4);
+    pkg->setRectangleAt(AutoShootRectangle, 5);
+    pkg->setIntegerAt(Balance_num, 6);
 }
 
-//基地受击打字符
+// 基地受击打字符
 void Referee::uiAddComponents5(referee::InterGraphicStringPackage *pkg)
 {
     std::string base_attack_str = "Base";
@@ -358,12 +372,12 @@ void Referee::uiAddComponents5(referee::InterGraphicStringPackage *pkg)
                                        referee::Graphic::Layer::kGraphicLayer0,
                                        referee::Graphic::Color::kColorYellow,
                                        ui_init_data_.base_attack_pos[0], ui_init_data_.base_attack_pos[1],
-                                       ui_init_data_.attack_string_size,base_attack_str.size());
+                                       ui_init_data_.attack_string_size, base_attack_str.size());
 
-    pkg->setStrintg(base_attack_string,base_attack_str);
+    pkg->setStrintg(base_attack_string, base_attack_str);
 }
 
-//英雄受击打字符
+// 英雄受击打字符
 void Referee::uiAddComponents6(referee::InterGraphicStringPackage *pkg)
 {
     std::string hero_attack_str = "Hero";
@@ -372,12 +386,12 @@ void Referee::uiAddComponents6(referee::InterGraphicStringPackage *pkg)
                                        referee::Graphic::Layer::kGraphicLayer0,
                                        referee::Graphic::Color::kColorYellow,
                                        ui_init_data_.hero_attack_pos[0], ui_init_data_.hero_attack_pos[1],
-                                       ui_init_data_.attack_string_size,hero_attack_str.size());
+                                       ui_init_data_.attack_string_size, hero_attack_str.size());
 
-    pkg->setStrintg(hero_attack_string,hero_attack_str);
+    pkg->setStrintg(hero_attack_string, hero_attack_str);
 }
 
-//哨所受击打字符
+// 哨所受击打字符
 void Referee::uiAddComponents7(referee::InterGraphicStringPackage *pkg)
 {
     std::string outpost_attack_str = "Outpost";
@@ -386,12 +400,12 @@ void Referee::uiAddComponents7(referee::InterGraphicStringPackage *pkg)
                                           referee::Graphic::Layer::kGraphicLayer0,
                                           referee::Graphic::Color::kColorYellow,
                                           ui_init_data_.outpost_attack_pos[0], ui_init_data_.outpost_attack_pos[1],
-                                          ui_init_data_.attack_string_size,outpost_attack_str.size());
+                                          ui_init_data_.attack_string_size, outpost_attack_str.size());
 
-    pkg->setStrintg(outpost_attack_string,outpost_attack_str);
+    pkg->setStrintg(outpost_attack_string, outpost_attack_str);
 }
 
-//底盘模式字符
+// 底盘模式字符
 void Referee::uiAddComponents8(referee::InterGraphicStringPackage *pkg)
 {
     std::string chassis_mode_str = "CHASSIS:DEAD";
@@ -400,12 +414,12 @@ void Referee::uiAddComponents8(referee::InterGraphicStringPackage *pkg)
                                         referee::Graphic::Layer::kGraphicLayer0,
                                         referee::Graphic::Color::kColorYellow,
                                         ui_init_data_.chassis_mode_string_pos[0], ui_init_data_.chassis_mode_string_pos[1],
-                                        ui_init_data_.mode_string_size,chassis_mode_str.size());
+                                        ui_init_data_.mode_string_size, chassis_mode_str.size());
 
-    pkg->setStrintg(chassis_mode_string,chassis_mode_str);
+    pkg->setStrintg(chassis_mode_string, chassis_mode_str);
 }
 
-//转向模式字符
+// 转向模式字符
 void Referee::uiAddComponents9(referee::InterGraphicStringPackage *pkg)
 {
     std::string steer_mode_str = "STEER:DEPART";
@@ -414,47 +428,92 @@ void Referee::uiAddComponents9(referee::InterGraphicStringPackage *pkg)
                                       referee::Graphic::Layer::kGraphicLayer0,
                                       referee::Graphic::Color::kColorYellow,
                                       ui_init_data_.steer_mode_string_pos[0], ui_init_data_.steer_mode_string_pos[1],
-                                      ui_init_data_.mode_string_size,steer_mode_str.size());
+                                      ui_init_data_.mode_string_size, steer_mode_str.size());
 
-    pkg->setStrintg(steer_mode_string,steer_mode_str);
+    pkg->setStrintg(steer_mode_string, steer_mode_str);
 }
 
-//受击打显示框
-void Referee::uiAddComponents10(referee::InterGraphic7Package *pag){
+// 平衡标号
+void Referee::uiAddComponents11(referee::InterGraphicStringPackage *pkg)
+{
+    std::string balance_num_str = "Banlance:0";
+    referee::String balance_num_string(kString[5],
+                                       referee::Graphic::Operation::kGraphicAdd,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorYellow,
+                                       ui_init_data_.balance_num_string_pos[0], ui_init_data_.balance_num_string_pos[1],
+                                       ui_init_data_.mode_string_size / 2, balance_num_str.size());
+
+    pkg->setStrintg(balance_num_string, balance_num_str);
+}
+
+// 平衡标号
+void Referee::uiAddComponents12(referee::InterGraphicStringPackage *pkg)
+{
+    std::string minipc_state_str = "minipc:offline";
+    referee::String minipc_state(kString[6],
+                                 referee::Graphic::Operation::kGraphicAdd,
+                                 referee::Graphic::Layer::kGraphicLayer0,
+                                 referee::Graphic::Color::kColorYellow,
+                                 ui_init_data_.minipc_states_pos[0], ui_init_data_.minipc_states_pos[1],
+                                 ui_init_data_.mode_string_size / 2, minipc_state_str.size());
+
+    pkg->setStrintg(minipc_state, minipc_state_str);
+}
+// 受击打显示框
+void Referee::uiAddComponents10(referee::InterGraphic7Package *pag)
+{
     referee::Rectangle base_attack_rectangle(kAttackRetangle[0],
-                       referee::Graphic::Operation::kGraphicAdd,
-                       referee::Graphic::Layer::kGraphicLayer0,
-                       referee::Graphic::Color::kColorPurple);
-    base_attack_rectangle.setStartPos(ui_init_data_.base_attack_pos[0]-10,ui_init_data_.base_attack_pos[1]-30);
-    base_attack_rectangle.setEndPos(ui_init_data_.base_attack_pos[0]+80,ui_init_data_.base_attack_pos[1]+10);
+                                             referee::Graphic::Operation::kGraphicAdd,
+                                             referee::Graphic::Layer::kGraphicLayer0,
+                                             referee::Graphic::Color::kColorPurple);
+    base_attack_rectangle.setStartPos(ui_init_data_.base_attack_pos[0] - 10, ui_init_data_.base_attack_pos[1] - 30);
+    base_attack_rectangle.setEndPos(ui_init_data_.base_attack_pos[0] + 80, ui_init_data_.base_attack_pos[1] + 10);
     base_attack_rectangle.setLineWidth(8);
 
     referee::Rectangle hero_attack_rectangle(kAttackRetangle[1],
-                       referee::Graphic::Operation::kGraphicAdd,
-                       referee::Graphic::Layer::kGraphicLayer0,
-                       referee::Graphic::Color::kColorPurple);
-    hero_attack_rectangle.setStartPos(ui_init_data_.hero_attack_pos[0]-10,ui_init_data_.hero_attack_pos[1]-30);
-    hero_attack_rectangle.setEndPos(ui_init_data_.hero_attack_pos[0]+80,ui_init_data_.hero_attack_pos[1]+10);
+                                             referee::Graphic::Operation::kGraphicAdd,
+                                             referee::Graphic::Layer::kGraphicLayer0,
+                                             referee::Graphic::Color::kColorPurple);
+    hero_attack_rectangle.setStartPos(ui_init_data_.hero_attack_pos[0] - 10, ui_init_data_.hero_attack_pos[1] - 30);
+    hero_attack_rectangle.setEndPos(ui_init_data_.hero_attack_pos[0] + 80, ui_init_data_.hero_attack_pos[1] + 10);
     hero_attack_rectangle.setLineWidth(8);
 
     referee::Rectangle outpost_attack_rectangle(kAttackRetangle[2],
-                       referee::Graphic::Operation::kGraphicAdd,
-                       referee::Graphic::Layer::kGraphicLayer0,
-                       referee::Graphic::Color::kColorPurple);
-    outpost_attack_rectangle.setStartPos(ui_init_data_.outpost_attack_pos[0]-10,ui_init_data_.outpost_attack_pos[1]-30);
-    outpost_attack_rectangle.setEndPos(ui_init_data_.outpost_attack_pos[0]+140,ui_init_data_.outpost_attack_pos[1]+10);
+                                                referee::Graphic::Operation::kGraphicAdd,
+                                                referee::Graphic::Layer::kGraphicLayer0,
+                                                referee::Graphic::Color::kColorPurple);
+    outpost_attack_rectangle.setStartPos(ui_init_data_.outpost_attack_pos[0] - 10, ui_init_data_.outpost_attack_pos[1] - 30);
+    outpost_attack_rectangle.setEndPos(ui_init_data_.outpost_attack_pos[0] + 140, ui_init_data_.outpost_attack_pos[1] + 10);
     outpost_attack_rectangle.setLineWidth(8);
 
+    referee::Arc base_attack_arc_front(kAttackArch[0],
+                                       referee::Graphic::Operation::kGraphicAdd,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorOrange);
 
+    base_attack_arc_front.setCenterPos(ui_init_data_.base_attack_pos[0], ui_init_data_.base_attack_pos[1]);
+    base_attack_arc_front.setRadius(ui_init_data_.attack_arch_radius[0], ui_init_data_.attack_arch_radius[1]);
+    base_attack_arc_front.setAng(0, 0);
+    base_attack_arc_front.setLineWidth(0);
 
-    pag->setRectangleAt(base_attack_rectangle,0);
-    pag->setRectangleAt(hero_attack_rectangle,1);
-    pag->setRectangleAt(outpost_attack_rectangle,2);
+    referee::Arc base_attack_arc_behind(kAttackArch[1],
+                                        referee::Graphic::Operation::kGraphicAdd,
+                                        referee::Graphic::Layer::kGraphicLayer0,
+                                        referee::Graphic::Color::kColorOrange);
+    base_attack_arc_behind.setCenterPos(ui_init_data_.base_attack_pos[0], ui_init_data_.base_attack_pos[1]);
+    base_attack_arc_behind.setRadius(ui_init_data_.attack_arch_radius[0], ui_init_data_.attack_arch_radius[1]);
+    base_attack_arc_behind.setAng(0, 0);
+    base_attack_arc_behind.setLineWidth(0);
 
-
+    pag->setRectangleAt(base_attack_rectangle, 0);
+    pag->setRectangleAt(hero_attack_rectangle, 1);
+    pag->setRectangleAt(outpost_attack_rectangle, 2);
+    pag->setArcAt(base_attack_arc_front, 3);
+    pag->setArcAt(base_attack_arc_behind, 4);
 }
 
-//腿长状态 超电 我方单位受击打状态
+// 腿长状态 超电 我方单位受击打状态
 void Referee::uiModifyComponents1(referee::InterGraphic7Package *pkg)
 {
 
@@ -519,36 +578,35 @@ void Referee::uiModifyComponents1(referee::InterGraphic7Package *pkg)
                                    ui_init_data_.super_cap_vertical_line[3]);
     super_cap_percentage.setLineWidth(25);
 
-
     uint8_t graphics_name[3] = {0};
     uint16_t startpos[2] = {0};
     uint16_t endpos[2] = {0};
     bool is_hurt = false;
-//受击打更新
-    switch (ui_init_data_.refresh_times%3)
+    // 受击打更新
+    switch (ui_init_data_.refresh_times % 3)
     {
     case 0:
-        memcpy(graphics_name, kAttackRetangle[0],3);
-        startpos[0]=ui_init_data_.base_attack_pos[0]-10;
-        startpos[1]=ui_init_data_.base_attack_pos[1]-30;
-        endpos[0]=ui_init_data_.base_attack_pos[0]+80;
-        endpos[1]=ui_init_data_.base_attack_pos[1]+10;
+        memcpy(graphics_name, kAttackRetangle[0], 3);
+        startpos[0] = ui_init_data_.base_attack_pos[0] - 10;
+        startpos[1] = ui_init_data_.base_attack_pos[1] - 30;
+        endpos[0] = ui_init_data_.base_attack_pos[0] + 80;
+        endpos[1] = ui_init_data_.base_attack_pos[1] + 10;
         is_hurt = ui_components_.is_base_attacked;
         break;
     case 1:
-        memcpy(graphics_name, kAttackRetangle[1],3);
-        startpos[0]=ui_init_data_.hero_attack_pos[0]-10;
-        startpos[1]=ui_init_data_.hero_attack_pos[1]-30;
-        endpos[0]=ui_init_data_.hero_attack_pos[0]+80;
-        endpos[1]=ui_init_data_.hero_attack_pos[1]+10;
+        memcpy(graphics_name, kAttackRetangle[1], 3);
+        startpos[0] = ui_init_data_.hero_attack_pos[0] - 10;
+        startpos[1] = ui_init_data_.hero_attack_pos[1] - 30;
+        endpos[0] = ui_init_data_.hero_attack_pos[0] + 80;
+        endpos[1] = ui_init_data_.hero_attack_pos[1] + 10;
         is_hurt = ui_components_.is_hero_attacked;
         break;
     case 2:
-        memcpy(graphics_name, kAttackRetangle[2],3);
-        startpos[0]=ui_init_data_.outpost_attack_pos[0]-10;
-        startpos[1]=ui_init_data_.outpost_attack_pos[1]-30;
-        endpos[0]=ui_init_data_.outpost_attack_pos[0]+140;
-        endpos[1]=ui_init_data_.outpost_attack_pos[1]+10;
+        memcpy(graphics_name, kAttackRetangle[2], 3);
+        startpos[0] = ui_init_data_.outpost_attack_pos[0] - 10;
+        startpos[1] = ui_init_data_.outpost_attack_pos[1] - 30;
+        endpos[0] = ui_init_data_.outpost_attack_pos[0] + 140;
+        endpos[1] = ui_init_data_.outpost_attack_pos[1] + 10;
         is_hurt = ui_components_.is_outpost_attacked;
         break;
     default:
@@ -558,10 +616,9 @@ void Referee::uiModifyComponents1(referee::InterGraphic7Package *pkg)
                                                referee::Graphic::Operation::kGraphicModify,
                                                referee::Graphic::Layer::kGraphicLayer0,
                                                referee::Graphic::Color::kColorPurple);
-    attack_update_rectangle.setStartPos(startpos[0],startpos[1]);
-    attack_update_rectangle.setEndPos(endpos[0],endpos[1]);
-    attack_update_rectangle.setLineWidth(is_hurt?8:0);
-
+    attack_update_rectangle.setStartPos(startpos[0], startpos[1]);
+    attack_update_rectangle.setEndPos(endpos[0], endpos[1]);
+    attack_update_rectangle.setLineWidth(is_hurt ? 8 : 0);
 
     pkg->setStraightLineAt(Left_leg_height_curr, 0);
     pkg->setStraightLineAt(Right_leg_height_curr, 1);
@@ -570,109 +627,235 @@ void Referee::uiModifyComponents1(referee::InterGraphic7Package *pkg)
     pkg->setStraightLineAt(leg_link_line, 4);
     pkg->setStraightLineAt(super_cap_percentage, 5);
     pkg->setRectangleAt(attack_update_rectangle, 6);
-
-
-
-
 }
-//自瞄目标更新
+
+// 自瞄目标更新 装甲板受击打显示
 void Referee::uiModifyComponents2(referee::InterGraphic7Package *pkg)
 {
-    // 自瞄目标圆圈1-7
-    for (size_t id = 0; id < 7; id++)
+    static int auto_shoot_referch_times = 0;
+    static int hurt_update_tick[2] = {0};
+    uint16_t x_offset = 68;
+    uint16_t y_offset = -158;
+    // 自瞄目标框
+    referee::Rectangle auto_shoot_target_rect(kAutoShootTargetRectangle,
+                                              referee::Graphic::Operation::kGraphicModify,
+                                              referee::Graphic::Layer::kGraphicLayer0,
+                                              referee::Graphic::Color::kColorWhite);
+    auto_shoot_target_rect.setStartPos(ui_components_.target_X - ui_init_data_.auto_shoot_target_Rect_size[0] + x_offset,
+                                       ui_components_.target_Y - ui_init_data_.auto_shoot_target_Rect_size[1] + y_offset);
+    auto_shoot_target_rect.setEndPos(ui_components_.target_X + ui_init_data_.auto_shoot_target_Rect_size[0] + x_offset,
+                                     ui_components_.target_Y + ui_init_data_.auto_shoot_target_Rect_size[1] + y_offset);
+    switch (ui_components_.target_state)
     {
-        referee::Integer target_num(kAutoShootNum[id],
-                                    referee::Graphic::Operation::kGraphicModify,
-                                    referee::Graphic::Layer::kGraphicLayer0,
-                                    referee::Graphic::Color::kColorWhite,
-                                    ui_init_data_.auto_shoot_target_num[id][0],
-                                    ui_init_data_.auto_shoot_target_num[id][1],
-                                    ui_init_data_.auto_shoot_target_num[id][2], (uint32_t)(id + 1));
-
-
-        
-        // auto_shoot_target.setCenterPos(ui_init_data_.auto_shoot_target_num[id][0],ui_init_data_.auto_shoot_target_num[id][1]);
-        // auto_shoot_target.setRadius(ui_init_data_.auto_shoot_target_num[id][2]);
-        // auto_shoot_target.setLineWidth(5);
-        if (ui_components_.auto_shoot_target_list & (1 << id))
-        {
-            target_num.setColor(referee::Graphic::Color::kColorPink);
-        }
-        if (ui_components_.auto_shoot_target_id == id)
-        {
-            target_num.setColor(referee::Graphic::Color::kColorGreen);
-        }
-        pkg->setIntegerAt(target_num, id);
+    case kTargetStateLost:
+        auto_shoot_target_rect.setLineWidth(0);
+        break;
+    case kTargetStateDetected:
+        auto_shoot_target_rect.setLineWidth(1);
+        auto_shoot_target_rect.setColor(referee::Graphic::Color::kColorOrange);
+        break;
+    case kTargetStateAimed:
+        auto_shoot_target_rect.setLineWidth(3);
+        auto_shoot_target_rect.setColor(referee::Graphic::Color::kColorCyan);
+        break;
+    default:
+        auto_shoot_target_rect.setLineWidth(0);
+        break;
     }
+
+    bool is_hurt = false;
+    static int hurt_start_ang = 0, hurt_end_ang = 0;
+
+    static float32_t last_gimbal_ang[2] = {0};
+    static float32_t last_armer_ang[2] = {0};
+
+    float gimbal_ang = ui_components_.chassis_angle - ui_components_.angle;
+
+    referee::Arc base_attack_arc_front(kAttackArch[0],
+                                       referee::Graphic::Operation::kGraphicModify,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorOrange);
+    if (ui_components_.is_shooted_armor_updated && ui_components_.shooted_armor == 0)
+    {
+        hurt_update_tick[0] = 500;
+        last_gimbal_ang[0] = gimbal_ang;
+        last_armer_ang[0] = ui_components_.angle;
+    }
+    hurt_start_ang = (-R2D(last_armer_ang[0] - (gimbal_ang - last_gimbal_ang[0])) - 30.0f);
+    hurt_end_ang = (-R2D(last_armer_ang[0] - (gimbal_ang - last_gimbal_ang[0])) + 30.0f);
+    hurt_start_ang = (int16_t)hello_world::HandleAngleCross0Deg(hurt_start_ang, 180);
+    hurt_end_ang = (int16_t)hello_world::HandleAngleCross0Deg(hurt_end_ang, 180);
+
+    base_attack_arc_front.setCenterPos(ui_init_data_.attack_arch[0], ui_init_data_.attack_arch[1]);
+    base_attack_arc_front.setRadius(ui_init_data_.attack_arch_radius[0], ui_init_data_.attack_arch_radius[1]);
+    base_attack_arc_front.setAng(hurt_start_ang, hurt_end_ang);
+    base_attack_arc_front.setLineWidth(hurt_update_tick[0] ? 12 : 0);
+
+    referee::Arc base_attack_arc_behind(kAttackArch[1],
+                                        referee::Graphic::Operation::kGraphicModify,
+                                        referee::Graphic::Layer::kGraphicLayer0,
+                                        referee::Graphic::Color::kColorOrange);
+    is_hurt = ui_components_.shooted_armor & ((0x01) << 4);
+    if (ui_components_.is_shooted_armor_updated && ui_components_.shooted_armor == 1)
+    {
+        hurt_update_tick[1] = 500;
+        last_gimbal_ang[1] = gimbal_ang;
+        last_armer_ang[1] = ui_components_.angle + PI;
+    }
+    static int ang_debug[2] = {0};
+    hurt_start_ang = (-R2D(last_armer_ang[1] - (gimbal_ang - last_gimbal_ang[1])) - 30.0f);
+    hurt_end_ang = (-R2D(last_armer_ang[1] - (gimbal_ang - last_gimbal_ang[1])) + 30.0f);
+    hurt_start_ang = (int16_t)hello_world::HandleAngleCross0Deg(hurt_start_ang, 180);
+    hurt_end_ang = (int16_t)hello_world::HandleAngleCross0Deg(hurt_end_ang, 180);
+    ang_debug[0] = hurt_start_ang;
+    ang_debug[1] = hurt_end_ang;
+    base_attack_arc_behind.setCenterPos(ui_init_data_.attack_arch[0], ui_init_data_.attack_arch[1]);
+    base_attack_arc_behind.setRadius(ui_init_data_.attack_arch_radius[0], ui_init_data_.attack_arch_radius[1]);
+    base_attack_arc_behind.setAng(hurt_start_ang, hurt_end_ang);
+    base_attack_arc_behind.setLineWidth(hurt_update_tick[1] ? 12 : 0);
+
+    int id = ui_components_.balance_num - 1;
+    referee::Integer Balance_num(kBalance_num_retangle,
+                                 referee::Graphic::Operation::kGraphicModify,
+                                 referee::Graphic::Layer::kGraphicLayer0,
+                                 referee::Graphic::Color::kColorGreen,
+                                 ui_init_data_.balance_num_pos[0], ui_init_data_.balance_num_pos[1],
+                                 10, id);
+
+    pkg->setRectangleAt(auto_shoot_target_rect, 0);
+    pkg->setArcAt(base_attack_arc_front, 1);
+    pkg->setArcAt(base_attack_arc_behind, 2);
+    pkg->setIntegerAt(Balance_num, 3);
+    if (hurt_update_tick[0])
+    {
+        hurt_update_tick[0]--;
+    }
+    if (hurt_update_tick[1])
+    {
+        hurt_update_tick[1]--;
+    }
+    auto_shoot_referch_times++;
 }
 
-void Referee::uiModifyMode(referee::InterGraphicStringPackage *pag){
-    if(ui_init_data_.refresh_times%8<4){//更新底盘模式
-        std::string chassis_mode_str = "CHASSIS:DEAD";
-
+void Referee::uiModifyMode(referee::InterGraphicStringPackage *pag)
+{
+    std::string ui_string;
+    referee::String string_graph;
+    switch (ui_init_data_.refresh_times % 8)
+    {
+    case 0:
+    case 1:
+    case 2:
         switch (ui_components_.chassis_mode)
         {
         case CHASSIS_DEAD:
-            chassis_mode_str="CHASSIS:DEAD";
+            ui_string = "CHASSIS:DEAD";
             break;
         case CHASSIS_MATURE:
-            chassis_mode_str="CHASSIS:MATURE";
+            ui_string = "CHASSIS:MATURE";
             break;
         case CHASSIS_CONFIRM:
-            chassis_mode_str="CHASSIS:CONFIRM";
+            ui_string = "CHASSIS:CONFIRM";
             break;
         case CHASSIS_INIT:
-            chassis_mode_str="CHASSIS:INIT";
+            ui_string = "CHASSIS:INIT";
             break;
         case CHASSIS_FLY:
-            chassis_mode_str="CHASSIS:FLY";
+            ui_string = "CHASSIS:FLY";
             break;
         case CHASSIS_RECOVERY:
-            chassis_mode_str="CHASSIS:RECOVERY";
+            ui_string = "CHASSIS:RECOVERY";
             break;
         case CHASSIS_JUMP:
-            chassis_mode_str="CHASSIS:JUMP";
+            ui_string = "CHASSIS:JUMP";
             break;
         default:
             break;
         }
-        referee::String chassis_mode_string(kString[3],
-                                        referee::Graphic::Operation::kGraphicModify,
-                                        referee::Graphic::Layer::kGraphicLayer0,
-                                        referee::Graphic::Color::kColorYellow,
-                                        ui_init_data_.chassis_mode_string_pos[0], ui_init_data_.chassis_mode_string_pos[1],
-                                        ui_init_data_.mode_string_size,chassis_mode_str.size());
-        pag->setStrintg(chassis_mode_string,chassis_mode_str);
-        
-    }else{
-        std::string steer_mode_str = "STEER:DEPART";
+        string_graph = referee::String(kString[3],
+                                       referee::Graphic::Operation::kGraphicModify,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorYellow,
+                                       ui_init_data_.chassis_mode_string_pos[0], ui_init_data_.chassis_mode_string_pos[1],
+                                       ui_init_data_.mode_string_size, ui_string.size());
+        pag->setStrintg(string_graph, ui_string);
+        break;
+    case 3:
+    case 4:
+    case 5:
         switch (ui_components_.steer_mode)
         {
         case STEER_DEPART:
-            steer_mode_str="STEER:DEPART";
+            ui_string = "STEER:DEPART";
             break;
         case STEER_DEFENSE:
-            steer_mode_str="STEER:DEFENSE";
+            ui_string = "STEER:DEFENSE";
             break;
         case STEER_GYRO:
-            steer_mode_str="STEER:GYRO";
+            ui_string = "STEER:GYRO";
             break;
         case STEER_MOVE:
-            steer_mode_str="STEER:MOVE";
+            ui_string = "STEER:MOVE";
             break;
         default:
             break;
         }
-        referee::String steer_mode_string(kString[4],
-                                      referee::Graphic::Operation::kGraphicModify,
-                                      referee::Graphic::Layer::kGraphicLayer0,
-                                      referee::Graphic::Color::kColorYellow,
-                                      ui_init_data_.steer_mode_string_pos[0], ui_init_data_.steer_mode_string_pos[1],
-                                      ui_init_data_.mode_string_size,steer_mode_str.size());
-        
-        pag->setStrintg(steer_mode_string,steer_mode_str);
-    }
+        string_graph = referee::String(kString[4],
+                                       referee::Graphic::Operation::kGraphicModify,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorYellow,
+                                       ui_init_data_.steer_mode_string_pos[0], ui_init_data_.steer_mode_string_pos[1],
+                                       ui_init_data_.mode_string_size, ui_string.size());
 
+        pag->setStrintg(string_graph, ui_string);
+        break;
+    case 6:
+        switch (ui_components_.balance_num)
+        {
+        case 3:
+            ui_string = "Banlance:3";
+            break;
+        case 4:
+            ui_string = "Banlance:4";
+            break;
+        case 5:
+            ui_string = "Banlance:5";
+            break;
+        default:
+            break;
+        }
+        string_graph = referee::String(kString[5],
+                                       referee::Graphic::Operation::kGraphicModify,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorYellow,
+                                       ui_init_data_.balance_num_string_pos[0], ui_init_data_.balance_num_string_pos[1],
+                                       ui_init_data_.mode_string_size / 2, ui_string.size());
+
+        pag->setStrintg(string_graph, ui_string);
+        break;
+    case 7:
+        switch (ui_components_.mini_pc_ok)
+        {
+        case 0:
+            ui_string = "minipc:offline";
+            break;
+        case 1:
+            ui_string = "minipc:online";
+        default:
+            break;
+        }
+        string_graph = referee::String(kString[6],
+                                       referee::Graphic::Operation::kGraphicModify,
+                                       referee::Graphic::Layer::kGraphicLayer0,
+                                       referee::Graphic::Color::kColorYellow,
+                                       ui_init_data_.balance_num_string_pos[0], ui_init_data_.balance_num_string_pos[1],
+                                       ui_init_data_.mode_string_size / 2, ui_string.size());
+
+        pag->setStrintg(string_graph, ui_string);
+        break;
+    default:
+        break;
+    }
 }
 
 bool Referee::drawUi(UiComponents ui_components, uint8_t *tx_data, size_t *tx_len, bool is_enabled)
@@ -689,7 +872,7 @@ bool Referee::drawUi(UiComponents ui_components, uint8_t *tx_data, size_t *tx_le
 
         ui_init_data_.refresh_times = 0;
         referee::InterGraphicDeletePackage delete_pkg;
-        delete_pkg.setDelOptration(referee::DeleteOperation::kDeleteAll);
+        delete_pkg.setDeleteOperation(referee::DeleteOperation::kDeleteAll);
         delete_pkg.setSenderId(sender_id);
         encoder_.encodeFrame(&delete_pkg, tx_data, tx_len);
         return true;
@@ -732,14 +915,23 @@ bool Referee::drawUi(UiComponents ui_components, uint8_t *tx_data, size_t *tx_le
     case 9:
         uiAddComponents10(&inter_graphic7_pkg);
         break;
+    case 10:
+        uiAddComponents11(&inter_graphic_string_pkg);
+        package_type = String;
+        break;
+    case 11:
+        uiAddComponents12(&inter_graphic_string_pkg);
+        package_type = String;
+        break;
     default:
-        switch (ui_init_data_.refresh_times % 4)
+        switch (ui_init_data_.refresh_times % 5)
         {
-        case 0:
-        case 2:
+        case 1:
             uiModifyComponents1(&inter_graphic7_pkg);
             break;
-        case 1:
+        case 0:
+        case 2:
+        case 4:
             uiModifyComponents2(&inter_graphic7_pkg);
             break;
         case 3:
