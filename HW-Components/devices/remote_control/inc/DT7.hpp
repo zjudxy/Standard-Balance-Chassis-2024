@@ -18,7 +18,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "allocator.hpp"
-#include "stm32h7xx_hal.h"
+#include "stm32_hal.hpp"
 
 namespace hello_world
 {
@@ -27,6 +27,7 @@ namespace remote_control
 /* Exported macro ------------------------------------------------------------*/
 
 enum SwitchState : uint8_t {
+  kSwitchStateErr = 0u,
   kSwitchStateUp = 1u,
   kSwitchStateMid = 3u,
   kSwitchStateDown = 2u,
@@ -52,12 +53,14 @@ class DT7 : public MemMang
 
   SwitchState rc_l_switch(void) const { return rc_l_switch_; }
   SwitchState rc_r_switch(void) const { return rc_r_switch_; }
+  SwitchState last_rc_l_switch(void) const { return last_rc_l_switch_; }
+  SwitchState last_rc_r_switch(void) const { return last_rc_r_switch_; }
 
   int16_t mouse_x(void) const { return mouse_x_; }
   int16_t mouse_y(void) const { return mouse_y_; }
   int16_t mouse_z(void) const { return mouse_z_; }
 
-  bool mouse_l_btn(bool reset)
+  bool mouse_l_btn(bool reset = false)
   {
     bool tmp = mouse_l_btn_;
     if (reset) {
@@ -65,7 +68,7 @@ class DT7 : public MemMang
     }
     return tmp;
   }
-  bool mouse_r_btn(bool reset)
+  bool mouse_r_btn(bool reset = false)
   {
     bool tmp = mouse_r_btn_;
     if (reset) {
@@ -202,24 +205,34 @@ class DT7 : public MemMang
     return tmp;
   }
 
+  bool isKeyboardPressed(void) const { return key_.data != 0u; }
+  bool isMousePressed(void) const { return mouse_l_btn_ || mouse_r_btn_; }
+  bool isMouseMoved(void) const { return mouse_x_ != 0 || mouse_y_ != 0 || mouse_z_ != 0; }
+  bool isUsingKeyboardMouse(void) const { return isKeyboardPressed() || isMousePressed() || isMouseMoved(); }
+  bool isRcSwitchChanged(void) const { return (rc_l_switch_ != last_rc_l_switch_ && last_rc_l_switch_!= SwitchState::kSwitchStateErr) || (rc_r_switch_ != last_rc_r_switch_ && last_rc_r_switch_!= SwitchState::kSwitchStateErr); }
+  bool isRcMoved(void) const { return (rc_lv_ != 0) || (rc_lh_ != 0) || (rc_rv_ != 0) || (rc_rh_ != 0) || (rc_wheel_ != 0); }
+  bool isUsingRc(void) const { return isRcSwitchChanged() || isRcMoved(); }
+
  private:
-  float rc_lv_;     ///* 遥控器左摇杆竖直值，[-1, 1]
-  float rc_lh_;     ///* 遥控器左摇杆水平值，[-1, 1]
-  float rc_rv_;     ///* 遥控器右摇杆竖直值，[-1, 1]
-  float rc_rh_;     ///* 遥控器右摇杆水平值，[-1, 1]
-  float rc_wheel_;  ///* 遥控器拨轮值，[-1, 1]
+  float rc_lv_ = 0.0f;     ///* 遥控器左摇杆竖直值，[-1, 1]
+  float rc_lh_ = 0.0f;     ///* 遥控器左摇杆水平值，[-1, 1]
+  float rc_rv_ = 0.0f;     ///* 遥控器右摇杆竖直值，[-1, 1]
+  float rc_rh_ = 0.0f;     ///* 遥控器右摇杆水平值，[-1, 1]
+  float rc_wheel_ = 0.0f;  ///* 遥控器拨轮值，[-1, 1]
 
-  SwitchState rc_l_switch_;  ///* 遥控器左拨杆值
-  SwitchState rc_r_switch_;  ///* 遥控器右拨杆值
+  SwitchState rc_l_switch_ = SwitchState::kSwitchStateErr;       ///* 遥控器左拨杆值
+  SwitchState rc_r_switch_ = SwitchState::kSwitchStateErr;       ///* 遥控器右拨杆值
+  SwitchState last_rc_l_switch_ = SwitchState::kSwitchStateErr;  ///* 上一次遥控器左拨杆值
+  SwitchState last_rc_r_switch_ = SwitchState::kSwitchStateErr;  ///* 上一次遥控器右拨杆值
 
-  bool mouse_l_btn_;  ///* 鼠标左键是否按下
-  bool mouse_r_btn_;  ///* 鼠标右键是否按下
-  int16_t mouse_x_;   ///* 鼠标x轴数值
-  int16_t mouse_y_;   ///* 鼠标y轴数值
-  int16_t mouse_z_;   ///* 鼠标z轴数值
+  bool mouse_l_btn_ = false;  ///* 鼠标左键是否按下
+  bool mouse_r_btn_ = false;  ///* 鼠标右键是否按下
+  int16_t mouse_x_ = 0u;      ///* 鼠标x轴数值
+  int16_t mouse_y_ = 0u;      ///* 鼠标y轴数值
+  int16_t mouse_z_ = 0u;      ///* 鼠标z轴数值
 
   union {
-    uint16_t data;
+    uint16_t data = 0u;
     struct {
       uint16_t W : 1;
       uint16_t S : 1;

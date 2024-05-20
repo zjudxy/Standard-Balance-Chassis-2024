@@ -52,8 +52,22 @@ void DT7::decode(const uint8_t rx_data[kRcRxDataLen])
   tmp = rx_data[16] | (rx_data[17] << 8);
   rc_wheel_ = (tmp - kRcOffset) * kRcRatio;
 
-  rc_l_switch_ = SwitchState(((rx_data[5] >> 4) & 0x000C) >> 2);
-  rc_r_switch_ = SwitchState((rx_data[5] >> 4) & 0x0003);
+  tmp = ((rx_data[5] >> 4) & 0x000C) >> 2;
+  if (tmp < 1 || tmp > 3) {
+    tmp = 0;
+  }
+  if (tmp != rc_l_switch_) {
+    last_rc_l_switch_ = rc_l_switch_;
+    rc_l_switch_ = SwitchState(tmp);
+  };
+  tmp = (rx_data[5] >> 4) & 0x0003;
+  if (tmp < 1 || tmp > 3) {
+    tmp = 0;
+  }
+  if (tmp != rc_r_switch_) {
+    last_rc_r_switch_ = rc_r_switch_;
+    rc_r_switch_ = SwitchState(tmp);
+  };
 
   mouse_x_ = rx_data[6] | (rx_data[7] << 8);
   mouse_y_ = rx_data[8] | (rx_data[9] << 8);

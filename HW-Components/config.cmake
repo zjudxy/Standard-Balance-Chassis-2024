@@ -22,8 +22,11 @@ option(use_prebuilt_hwcomponents_algorithms_filter "Use prebuilt filter" ON)
 option(use_hwcomponents_algorithms_observer "Use observer" ON)
 option(use_prebuilt_hwcomponents_algorithms_observer "Use prebuilt observer" ON)
 
+option(use_hwcomponents_algorithms_fsm "Use fsm" ON)
+option(use_prebuilt_hwcomponents_algorithms_fsm "Use prebuilt fsm" ON)
+
 # devices
-option(use_hwcomponents_devices_referee "Use referee device" OFF)
+option(use_hwcomponents_devices_referee "Use referee device" ON)
 option(use_prebuilt_hwcomponents_devices_referee "Use prebuilt referee" ON)
 
 option(use_hwcomponents_devices_motor "Use motor device" ON)
@@ -47,6 +50,8 @@ option(use_prebuilt_hwcomponents_devices_imu "Use prebuilt imu" ON)
 # dsp
 option(use_hwcomponents_bsp_tick "Use bsp tick" ON)
 option(use_prebuilt_hwcomponents_bsp_tick "Use prebuilt bsp tick" ON)
+
+option(use_hwcomponents_bsp_stm32_hal "Use bsp stm32 hal" ON)
 
 # Third_Party
 option(use_hwcomponents_third_party_dsp "Use third party: dsp" ON)

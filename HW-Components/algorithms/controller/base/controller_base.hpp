@@ -13,8 +13,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_
-#define HW_COMPONETS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_
+#define HW_COMPONENTS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include <cstddef>
@@ -56,4 +56,4 @@ class Controller : public MemMang
 
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_CONTROLLER_CONTROLLER_BASE_HPP_ */

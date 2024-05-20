@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_FILTER_FILTER_BASE_HPP_
-#define HW_COMPONETS_ALGORITHMS_FILTER_FILTER_BASE_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_FILTER_FILTER_BASE_HPP_
+#define HW_COMPONENTS_ALGORITHMS_FILTER_FILTER_BASE_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include <cstddef>
@@ -61,4 +61,4 @@ class Filter : public MemMang
 }  // namespace filter
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_FILTER_FILTER_BASE_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_FILTER_FILTER_BASE_HPP_ */

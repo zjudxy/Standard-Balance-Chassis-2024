@@ -64,7 +64,7 @@ void JumpDetect(void);
 
 void GimbalOnlineDetect(void);
 
-TD::Td *domg_err_td = nullptr;
+// TD::Td *domg_err_td = nullptr;
 
 /**
  * @brief       init detect task
@@ -74,7 +74,7 @@ TD::Td *domg_err_td = nullptr;
 void DetectInit(void)
 {
     robot.detect_states.on_ground[0] = robot.detect_states.on_ground[1] = robot.detect_states.on_ground[2] = true;
-    domg_err_td = new TD::Td(100.0f, 0.001f);
+    // domg_err_td = new TD::Td(100.0f, 0.001f);
 }
 
 /**

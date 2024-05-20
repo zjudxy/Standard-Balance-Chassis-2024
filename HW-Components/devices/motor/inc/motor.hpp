@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "motor_A1.hpp"
 #include "motor_DM_J4310.hpp"
+#include "motor_DM_J8006.hpp"
 #include "motor_GM6020.hpp"
 #include "motor_M2006.hpp"
 #include "motor_M3508.hpp"
@@ -41,6 +42,7 @@ enum MotorType {
   kMotorTypeM8910,
   kMotorTypeA1,
   kMotorTypeDM_J4310,
+  kMotorTypeDM_J8006,
   kMotorTypeMF9025v2,
 };
 /* Exported constants --------------------------------------------------------*/

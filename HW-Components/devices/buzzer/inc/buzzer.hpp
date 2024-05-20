@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "allocator.hpp"
-#include "stm32h7xx_hal.h"
+#include "stm32_hal.hpp"
 
 namespace hello_world
 {
@@ -111,7 +111,7 @@ enum PlayConfig : uint8_t {
 };
 /* Exported constants --------------------------------------------------------*/
 
-const size_t kTuneListMaxLen = 512u;
+const size_t kTuneListMaxLen = 4096u;
 /* Exported types ------------------------------------------------------------*/
 
 struct TuneListInfo {

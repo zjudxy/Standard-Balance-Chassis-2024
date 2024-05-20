@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_FILTER_FIR_HPP_
-#define HW_COMPONETS_ALGORITHMS_FILTER_FIR_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_FILTER_FIR_HPP_
+#define HW_COMPONENTS_ALGORITHMS_FILTER_FIR_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "filter_base.hpp"
@@ -50,4 +50,4 @@ class Fir : public Filter
 }  // namespace filter
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_FILTER_FIR_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_FILTER_FIR_HPP_ */

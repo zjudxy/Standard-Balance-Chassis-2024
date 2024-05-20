@@ -23,7 +23,7 @@ set(SIZE arm-none-eabi-size)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Set the project name and the languages used
-project(h7_test C CXX ASM) # TODO: change project name here
+project(Chassis C CXX ASM) # TODO: change project name here
 
 # Set the C++ and C standards
 set(CMAKE_CXX_STANDARD 17)
@@ -54,12 +54,12 @@ if(enable_soft_fp AND enable_hard_fp)
   message(FATAL_ERROR "You can only choose one floating point mode")
 endif()
 
-# TODO: Modify according to the chip model used, you can find the required macro
-# definition in the stm32f4xx.h file
+# TODO: Modify according to the chip model used, 
+# you can find the required macro definition in the stm32f4xx.h file 
 set(STM32_DEVICE STM32H723xx)
 
 # Specify user folders
-set(user_folders "Tasks" "Resources" "Robot_config" "HW-Components-Referee") # TODO Add your own user folders here
+set(user_folders "Resources" "Robot_config" "Tasks" "HW-Components-Referee") # TODO Add your own user folders here
 
 # Specify the path to the HW-Components directory
 set(HWC_DIR "HW-Components") # TODO: Set your own HW-Components path here
@@ -70,15 +70,74 @@ include("${HWC_DIR}/config.cmake") # Default configuration
 
 # TODO: Overwrite default configuration instead of changing it in file
 
+# # tools
+# option(use_hwcomponents_tools "Use tools" ON)
+# option(use_prebuilt_hwcomponents_tools "Use prebuilt tools" ON)
+# option(use_hwcomponents_custom_define_assert "Use custom define assert" ON)
+# # set(use_hwcomponents_custom_define_assert ON CACHE INTERNAL "Use custom define assert")
+
+# # algorithms
+# option(use_hwcomponents_algorithms_controller "Use algorithms controller" ON)
+# option(use_prebuilt_hwcomponents_algorithms_controller "Use prebuilt algorithms controller" OFF)
+
+# option(use_hwcomponents_algorithms_ik_solver_chassis "Use algorithms ik_solver" ON)
+# option(use_prebuilt_hwcomponents_algorithms_ik_solver_chassis "Use prebuilt algorithms ik_solver" ON)
+# option(CHASSIS_IKSOLVER_USE_ARM_MATH "chassis_ik_solver use math function from arm_math.h" ON)
+
+# option(use_hwcomponents_algorithms_ahrs "Use AHRS" ON)
+# option(use_prebuilt_hwcomponents_algorithms_ahrs "Use prebuilt AHRS" OFF)
+
+# option(use_hwcomponents_algorithms_filter "Use filter" ON)
+# option(use_prebuilt_hwcomponents_algorithms_filter "Use prebuilt filter" OFF)
+
+# option(use_hwcomponents_algorithms_observer "Use observer" ON)
+# option(use_prebuilt_hwcomponents_algorithms_observer "Use prebuilt observer" OFF)
+
+# option(use_hwcomponents_algorithms_fsm "Use fsm" ON)
+# option(use_prebuilt_hwcomponents_algorithms_fsm "Use prebuilt fsm" OFF)
+
+# # devices
+# option(use_hwcomponents_devices_referee "Use referee device" ON)
+# option(use_prebuilt_hwcomponents_devices_referee "Use prebuilt referee" OFF)
+
+# option(use_hwcomponents_devices_motor "Use motor device" ON)
+# option(use_prebuilt_hwcomponents_devices_motor "Use prebuilt motor" OFF)
+
+# option(use_hwcomponents_devices_laser "Use laser device" ON)
+# option(use_prebuilt_hwcomponents_devices_laser "Use prebuilt laser" OFF)
+
+# option(use_hwcomponents_devices_servo "Use servo device" ON)
+# option(use_prebuilt_hwcomponents_devices_servo "Use prebuilt servo" OFF)
+
+# option(use_hwcomponents_devices_buzzer "Use buzzer device" ON)
+# option(use_prebuilt_hwcomponents_devices_buzzer "Use prebuilt buzzer" OFF)
+
+# option(use_hwcomponents_devices_remote_control "Use remote control device" ON)
+# option(use_prebuilt_hwcomponents_devices_remote_control "Use prebuilt remote control" OFF)
+
+# option(use_hwcomponents_devices_imu "Use imu device" ON)
+# option(use_prebuilt_hwcomponents_devices_imu "Use prebuilt imu" OFF)
+
+# # dsp
+# option(use_hwcomponents_bsp_tick "Use bsp tick" ON)
+# option(use_prebuilt_hwcomponents_bsp_tick "Use prebuilt bsp tick" OFF)
+
+# option(use_hwcomponents_bsp_stm32_hal "Use bsp stm32 hal" ON)
+
+# # Third_Party
+# option(use_hwcomponents_third_party_dsp "Use third party: dsp" ON)
+# option(use_prebuilt_hwcomponents_third_party_dsp "Use prebuilt third party: dsp" OFF)
+
 # TODO: Add your own `config.cmake` file or set your own configuration here
+
 
 # ###################### COMPILE AND LINK OPTIONS SECTION ######################
 # If hardware floating point is enabled, add the corresponding compile and link
 # options
 if(enable_hard_fp)
   message(STATUS "Enable hard floating point")
-  add_compile_options(-mfloat-abi=hard -mfpu=fpv5-sp-d16)
-  add_link_options(-mfloat-abi=hard -mfpu=fpv5-sp-d16)
+  add_compile_options(-mfloat-abi=hard -mfpu=fpv4-sp-d16)
+  add_link_options(-mfloat-abi=hard -mfpu=fpv4-sp-d16)
 endif()
 
 # If software floating point is enabled, add the corresponding compile options
@@ -89,9 +148,9 @@ endif()
 
 # Add compile options for the target CPU and instruction set,function and data
 # sections
-add_compile_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)
+add_compile_options(-mcpu=cortex-m4 -mthumb -mthumb-interwork)
 add_compile_options(-ffunction-sections -fdata-sections -fno-common
-                    -fmessage-length=0)
+  -fmessage-length=0)
 
 # Enable preprocessing for assembler files
 add_compile_options($<$<COMPILE_LANGUAGE:ASM>:-x$<SEMICOLON>assembler-with-cpp>)
@@ -112,7 +171,7 @@ else()
 endif()
 
 # Add definitions for the preprocessor
-add_definitions(-DDEBUG -DUSE_HAL_DRIVER -D${STM32_DEVICE})
+add_definitions(-DDEBUG -DUSE_HAL_DRIVER -D${STM32_DEVICE} -D__CC_ASM)
 
 # Add link options for garbage collection, memory usage printing, map file
 # generation, the target CPU and instruction set, the linker script to the link
@@ -120,7 +179,7 @@ add_definitions(-DDEBUG -DUSE_HAL_DRIVER -D${STM32_DEVICE})
 add_link_options(
   -Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map
 )
-add_link_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)
+add_link_options(-mcpu=cortex-m4 -mthumb -mthumb-interwork)
 add_link_options(-T ${LINKER_SCRIPT})
 
 # #################### ADD LIBRARIES AND EXECUTABLE SECTION ####################
@@ -142,7 +201,7 @@ list(APPEND project_incs ${drivers_incs})
 # For each user folder, search for include files and source files
 foreach(user_folder ${user_folders})
   search_incs_recurse("${CMAKE_CURRENT_SOURCE_DIR}/${user_folder}"
-                      ${user_folder}_incs)
+    ${user_folder}_incs)
   file(GLOB_RECURSE ${user_folder}_srcs "${user_folder}/*.*")
   list(APPEND project_incs ${${user_folder}_incs})
   list(APPEND project_srcs ${${user_folder}_srcs})
@@ -176,5 +235,5 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
   COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf>
-          ${BIN_FILE}
+  ${BIN_FILE}
   COMMENT "Building ${HEX_FILE} Building ${BIN_FILE}")

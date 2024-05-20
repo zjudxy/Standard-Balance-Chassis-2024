@@ -53,7 +53,7 @@ pid::MultiNodesPid *yaw_tq_pid_ptr = nullptr;                                   
 // pid::BasicPid *yaw_tq_pid_ptr = nullptr;                                        // 转向力矩pid控制
 pid::BasicPid *roll_pid_ptr = nullptr;           // roll力矩控制
 pid::MultiNodesPid *yaw_motor_pid_ptr = nullptr; // 临时yaw轴pid控制
-TD::Td *joint_motor_td[4] = {nullptr};
+// TD::Td *joint_motor_td[4] = {nullptr};
 // pid::MultiNodesPid* leg_ang_pid=nullptr;
 static float mature_lqr[2][2][6];
 static float recover_lqr[4];
@@ -131,7 +131,7 @@ void CtrlInit(void)
                                                  pid::MultiNodesPid::ParamsList(kJointPidsParams, kJointPidsParams + 2));
         // joint_confirm_pid_ptr[i] = new pid::MultiNodesPid(pid::MultiNodesPidType::kMultiNodesPidTypeCascade, pid::OutLimit(true,-30.0f, 30.0f), 1, &kJointConfirmPidsParams);
         joint_confirm_pid_ptr[i] = new pid::BasicPid(kJointConfirmPidsParams);
-        joint_motor_td[i] = new TD::Td(100.0f, 0.001f);
+        // joint_motor_td[i] = new TD::Td(100.0f, 0.001f);
     }
 
     for (uint8_t i = 0; i < 2; i++)

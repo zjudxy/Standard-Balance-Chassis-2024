@@ -147,7 +147,6 @@ State A1::encode(uint8_t tx_data[8], uint32_t tx_msg_std_id)
                            motor_info_.raw_input_lim, -motor_info_.raw_input_lim);
     tx_data[2 * index] = input >> 8;
     tx_data[2 * index + 1] = input;
-    tx_data[6] |= (0x01 << index);
 
     return kStateOk;
   }

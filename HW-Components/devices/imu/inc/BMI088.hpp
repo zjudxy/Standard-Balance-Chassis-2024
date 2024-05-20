@@ -20,7 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "allocator.hpp"
 #include "arm_math.h"
-#include "stm32h7xx_hal.h"
+#include "stm32_hal.hpp"
 
 namespace hello_world
 {

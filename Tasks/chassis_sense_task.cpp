@@ -54,7 +54,7 @@ static observer::Kalman *observer_ptr[2] = {nullptr};
 
 static Td_t dtheta_td[2], dheight_td[2], domg_err_td;
 static Td_t ddtheta_td[2], ddphi_td[2], ddheight_td[2], dpos_td[2];
-filter::Td *ddp_td[2] = {nullptr};
+// filter::Td *ddp_td[2] = {nullptr};
 float32_t body_dpos = 0.0f;
 float StateSpaceModelU[2][2] = {0};
 float StateSpaceModelA_L[2][6][6] = {0};
@@ -150,8 +150,8 @@ void SenseInit(void)
         fail_count++;
         err_state = imu_ptr->init(true);
     } while (err_state != imu::kBMI088ErrStateNoErr);
-    ddp_td[0] = new filter::Td(100.0f, 0.001f);
-    ddp_td[1] = new filter::Td(100.0f, 0.001f);
+    // ddp_td[0] = new filter::Td(100.0f, 0.001f);
+    // ddp_td[1] = new filter::Td(100.0f, 0.001f);
 
     observer::Kalman::Config kf_config = {
         .x_dim = 2,

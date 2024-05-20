@@ -47,7 +47,7 @@ if(use_${lib_name})
 
   # 设置依赖的库
   set(depend_libs drivers ${HWC_LIB_PREFIX}_tools
-                  ${HWC_LIB_PREFIX}_third_party_dsp)
+                  ${HWC_LIB_PREFIX}_third_party_dsp ${HWC_LIB_PREFIX}_bsp_stm32_hal)
 
   if(use_prebuilt)
     # ~~~

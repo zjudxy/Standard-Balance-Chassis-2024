@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_AHRS_AHRS_HPP_
-#define HW_COMPONETS_ALGORITHMS_AHRS_AHRS_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_HPP_
+#define HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "ahrs_base.hpp"
@@ -26,4 +26,4 @@
 /* Exported variables --------------------------------------------------------*/
 /* Exported function prototypes ----------------------------------------------*/
 
-#endif /* HW_COMPONETS_ALGORITHMS_AHRS_AHRS_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_HPP_ */

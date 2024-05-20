@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_AHRS_AHRS_BASE_HPP_
-#define HW_COMPONETS_ALGORITHMS_AHRS_AHRS_BASE_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_BASE_HPP_
+#define HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_BASE_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include <cstring>
@@ -60,4 +60,4 @@ class Ahrs : public MemMang
 }  // namespace ahrs
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_AHRS_AHRS_BASE_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_AHRS_AHRS_BASE_HPP_ */

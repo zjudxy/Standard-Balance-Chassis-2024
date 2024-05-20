@@ -46,8 +46,8 @@ CMAKE_ASM_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 //No help, variable specified on the command line.
 CMAKE_BUILD_TYPE:STRING=Debug
 
-//CXX compiler
-CMAKE_CXX_COMPILER:STRING=X:/gcc/arm/bin/arm-none-eabi-g++.exe
+//No help, variable specified on the command line.
+CMAKE_CXX_COMPILER:FILEPATH=X:/gcc/arm/bin/arm-none-eabi-g++.exe
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -72,8 +72,8 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 //Flags used by the CXX compiler during RELWITHDEBINFO builds.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
-//C compiler
-CMAKE_C_COMPILER:STRING=X:/gcc/arm/bin/arm-none-eabi-gcc.exe
+//No help, variable specified on the command line.
+CMAKE_C_COMPILER:FILEPATH=X:/gcc/arm/bin/arm-none-eabi-gcc.exe
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -123,7 +123,7 @@ CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/pkgRedirects
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/h7_test
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/Gimbal
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=X:/gcc/arm/bin/arm-none-eabi-ld.exe
@@ -161,7 +161,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=h7_test
+CMAKE_PROJECT_NAME:STATIC=Chassis
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=X:/gcc/arm/bin/arm-none-eabi-ranlib.exe
@@ -226,13 +226,22 @@ CMAKE_STRIP:FILEPATH=X:/gcc/arm/bin/arm-none-eabi-strip.exe
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
-h7_test_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build
+Chassis_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build
 
 //Value Computed by CMake
-h7_test_IS_TOP_LEVEL:STATIC=ON
+Chassis_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-h7_test_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024
+Chassis_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024
+
+//Value Computed by CMake
+Gimbal_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build
+
+//Value Computed by CMake
+Gimbal_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Gimbal_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024
 
 //Value Computed by CMake
 hwcomponents_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components
@@ -289,6 +298,18 @@ hwcomponents_algorithms_filter_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standa
 hwcomponents_algorithms_filter_file:FILEPATH=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Lib/hwcomponents/algorithms/filter/libhwcomponents_algorithms_filter.a
 
 //Value Computed by CMake
+hwcomponents_algorithms_fsm_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/fsm
+
+//Value Computed by CMake
+hwcomponents_algorithms_fsm_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+hwcomponents_algorithms_fsm_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/fsm
+
+//Path to a library.
+hwcomponents_algorithms_fsm_file:FILEPATH=hwcomponents_algorithms_fsm_file-NOTFOUND
+
+//Value Computed by CMake
 hwcomponents_algorithms_ik_solver_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/ik_solver
 
 //Value Computed by CMake
@@ -329,6 +350,15 @@ hwcomponents_bsp_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 hwcomponents_bsp_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp
+
+//Value Computed by CMake
+hwcomponents_bsp_stm32_hal_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/stm32_hal
+
+//Value Computed by CMake
+hwcomponents_bsp_stm32_hal_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+hwcomponents_bsp_stm32_hal_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/stm32_hal
 
 //Value Computed by CMake
 hwcomponents_bsp_tick_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/tick
@@ -398,15 +428,6 @@ hwcomponents_devices_motor_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-B
 
 //Path to a library.
 hwcomponents_devices_motor_file:FILEPATH=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Lib/hwcomponents/devices/motor/libhwcomponents_devices_motor.a
-
-//Value Computed by CMake
-hwcomponents_devices_referee_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/referee
-
-//Value Computed by CMake
-hwcomponents_devices_referee_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-hwcomponents_devices_referee_SOURCE_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/referee
 
 //Value Computed by CMake
 hwcomponents_devices_remote_control_BINARY_DIR:STATIC=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/remote_control
@@ -483,11 +504,17 @@ use_hwcomponents_algorithms_controller:BOOL=ON
 //Use filter
 use_hwcomponents_algorithms_filter:BOOL=ON
 
+//Use fsm
+use_hwcomponents_algorithms_fsm:BOOL=ON
+
 //Use algorithms ik_solver
 use_hwcomponents_algorithms_ik_solver_chassis:BOOL=ON
 
 //Use observer
 use_hwcomponents_algorithms_observer:BOOL=ON
+
+//Use bsp stm32 hal
+use_hwcomponents_bsp_stm32_hal:BOOL=ON
 
 //Use bsp tick
 use_hwcomponents_bsp_tick:BOOL=ON
@@ -508,7 +535,7 @@ use_hwcomponents_devices_laser:BOOL=ON
 use_hwcomponents_devices_motor:BOOL=ON
 
 //Use referee device
-use_hwcomponents_devices_referee:BOOL=OFF
+use_hwcomponents_devices_referee:BOOL=ON
 
 //Use remote control device
 use_hwcomponents_devices_remote_control:BOOL=ON
@@ -530,6 +557,9 @@ use_prebuilt_hwcomponents_algorithms_controller:BOOL=ON
 
 //Use prebuilt filter
 use_prebuilt_hwcomponents_algorithms_filter:BOOL=ON
+
+//Use prebuilt fsm
+use_prebuilt_hwcomponents_algorithms_fsm:BOOL=ON
 
 //Use prebuilt algorithms ik_solver
 use_prebuilt_hwcomponents_algorithms_ik_solver_chassis:BOOL=ON
@@ -681,7 +711,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=23
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=24
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RANLIB
@@ -731,7 +761,7 @@ enable_hard_fp:INTERNAL=ON
 //Enable software floating point
 enable_soft_fp:INTERNAL=OFF
 //the include directories of hwcomponents
-hwcomponents_incs:INTERNAL=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP-1.14.2/Include/dsp;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP-1.14.2/Include;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Cholesky;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/CholmodSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX512;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AltiVec;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/CUDA;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/Default;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/GPU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/HIP/hcc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/MSA;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/NEON;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SSE;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SVE;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SYCL;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/ZVector;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/functors;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/products;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/util;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Eigenvalues;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry/arch;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Householder;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/IterativeLinearSolvers;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Jacobi;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/KLUSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU/arch;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/MetisSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/OrderingMethods;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PaStiXSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PardisoSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/QR;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SPQRSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SVD;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCholesky;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCore;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseLU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseQR;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/StlSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SuperLUSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/UmfPackSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/misc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/plugins;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ahrs/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/base;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/pid/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/filter/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ik_solver/chassis/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/observer/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/tick;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/imu/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/laser/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/motor/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/remote_control/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/servo/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/tools/inc
+hwcomponents_incs:INTERNAL=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP/Include;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Cholesky;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/CholmodSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX512;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AltiVec;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/CUDA;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/Default;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/GPU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/HIP/hcc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/MSA;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/NEON;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SSE;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SVE;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SYCL;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/ZVector;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/functors;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/products;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/util;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Eigenvalues;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry/arch;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Householder;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/IterativeLinearSolvers;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Jacobi;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/KLUSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU/arch;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/MetisSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/OrderingMethods;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PaStiXSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PardisoSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/QR;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SPQRSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SVD;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCholesky;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCore;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseLU;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseQR;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/StlSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SuperLUSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/UmfPackSupport;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/misc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/plugins;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ahrs/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/base;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/pid/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/filter/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/fsm/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ik_solver/chassis/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/observer/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/stm32_hal;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/tick;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/imu/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/laser/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/motor/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/remote_control/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/servo/inc;X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/tools/inc
 //libraries of hwcomponents
-hwcomponents_libs:INTERNAL=hwcomponents_third_party_dsp;hwcomponents_algorithms_ahrs;hwcomponents_algorithms_controller;hwcomponents_algorithms_filter;hwcomponents_algorithms_ik_solver_chassis;hwcomponents_algorithms_observer;hwcomponents_bsp_tick;hwcomponents_devices_buzzer;hwcomponents_devices_imu;hwcomponents_devices_laser;hwcomponents_devices_motor;hwcomponents_devices_remote_control;hwcomponents_devices_servo;hwcomponents_tools
+hwcomponents_libs:INTERNAL=hwcomponents_third_party_dsp;hwcomponents_algorithms_ahrs;hwcomponents_algorithms_controller;hwcomponents_algorithms_filter;hwcomponents_algorithms_fsm;hwcomponents_algorithms_ik_solver_chassis;hwcomponents_algorithms_observer;hwcomponents_bsp_stm32_hal;hwcomponents_bsp_tick;hwcomponents_devices_buzzer;hwcomponents_devices_imu;hwcomponents_devices_laser;hwcomponents_devices_motor;hwcomponents_devices_remote_control;hwcomponents_devices_servo;hwcomponents_tools
 

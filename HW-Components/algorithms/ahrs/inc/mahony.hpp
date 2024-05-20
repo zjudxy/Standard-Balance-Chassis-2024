@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_AHRS_MAHONY_HPP_
-#define HW_COMPONETS_ALGORITHMS_AHRS_MAHONY_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_AHRS_MAHONY_HPP_
+#define HW_COMPONENTS_ALGORITHMS_AHRS_MAHONY_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "ahrs_base.hpp"
@@ -49,4 +49,4 @@ class Mahony : public Ahrs
 }  // namespace ahrs
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_AHRS_MAHONY_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_AHRS_MAHONY_HPP_ */

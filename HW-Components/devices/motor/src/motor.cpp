@@ -55,6 +55,8 @@ Motor* CreateMotor(MotorType motor_type, uint8_t id,
       return new A1(id, optinal_params);
     case kMotorTypeDM_J4310:
       return new DM_J4310(id, optinal_params);
+    case kMotorTypeDM_J8006:
+      return new DM_J8006(id, optinal_params);
     case kMotorTypeMF9025v2:
       return new MF9025v2(id, optinal_params);
     default:

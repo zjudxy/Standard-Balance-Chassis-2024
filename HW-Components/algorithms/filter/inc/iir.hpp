@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_FILTER_IIR_HPP_
-#define HW_COMPONETS_ALGORITHMS_FILTER_IIR_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_FILTER_IIR_HPP_
+#define HW_COMPONENTS_ALGORITHMS_FILTER_IIR_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "filter_base.hpp"
@@ -53,4 +53,4 @@ class Iir : public Filter
 }  // namespace filter
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_FILTER_IIR_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_FILTER_IIR_HPP_ */

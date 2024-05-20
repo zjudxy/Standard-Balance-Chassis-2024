@@ -1,5 +1,5 @@
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/drivers.dir
-X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/h7_test.elf.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/Chassis.elf.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/CMakeFiles/edit_cache.dir
@@ -18,6 +18,9 @@ X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algor
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/controller/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/filter/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/filter/CMakeFiles/rebuild_cache.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/fsm/CMakeFiles/hwcomponents_algorithms_fsm.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/fsm/CMakeFiles/edit_cache.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/fsm/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/ik_solver/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/ik_solver/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/ik_solver/chassis/CMakeFiles/edit_cache.dir
@@ -26,6 +29,9 @@ X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algor
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/algorithms/observer/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/CMakeFiles/rebuild_cache.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/stm32_hal/CMakeFiles/hwcomponents_bsp_stm32_hal.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/stm32_hal/CMakeFiles/edit_cache.dir
+X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/stm32_hal/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/tick/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/bsp/tick/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/CMakeFiles/edit_cache.dir
@@ -38,8 +44,6 @@ X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devic
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/laser/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/motor/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/motor/CMakeFiles/rebuild_cache.dir
-X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/referee/CMakeFiles/edit_cache.dir
-X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/referee/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/remote_control/CMakeFiles/edit_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/remote_control/CMakeFiles/rebuild_cache.dir
 X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/HW-Components/devices/servo/CMakeFiles/edit_cache.dir

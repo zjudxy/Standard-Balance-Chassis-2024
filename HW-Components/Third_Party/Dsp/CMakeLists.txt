@@ -21,22 +21,20 @@ if(use_${lib_name})
   # CMakeLists.txt 中设置，例如： add_compile_options(-mfloat-abi=hard
   # -mfpu=fpv4-sp-d16) add_link_options(-mfloat-abi=hard -mfpu=fpv4-sp-d16)
   # ~~~
-  if(NOT enable_hard_fp)
-    message(
-      FATAL_ERROR "enable_hard_fp must be set to ON when using ${lib_name}")
-  endif()
+  # if(NOT enable_hard_fp)
+  #   message(
+  #     FATAL_ERROR "enable_hard_fp must be set to ON when using ${lib_name}")
+  # endif()
 
-  set(CMSISDSP "${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP-1.14.2")
+  set(CMSISDSP "${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP")
 
   # 设置公共和私有的头文件目录，并移除没有头文件的目录
-  set(${lib_name}_public_includes
-      "${CMAKE_CURRENT_SOURCE_DIR}" "${CMSISDSP}/Include/dsp"
-      "${CMSISDSP}/Include")
+  set(${lib_name}_public_includes "${CMSISDSP}/Include")
   set(${lib_name}_private_includes "${CMSISDSP}/PrivateInclude")
   remove_redundant_include_directories(${lib_name}_public_includes)
 
   # TODO(ZhouShichan): 谨慎使用 *.* ，因为会包含一些不需要的文件 获取源文件
-  file(GLOB_RECURSE ${lib_name}_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.*)
+  file(GLOB_RECURSE ${lib_name}_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
   # 局部变量，用于判断是否使用预编译库
   set(use_prebuilt OFF)

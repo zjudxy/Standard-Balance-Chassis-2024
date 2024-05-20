@@ -75,11 +75,11 @@ enum WheelType {
 };
 // 逆解结果
 enum IkSolveStatus {
-  kIkSolveOk      = 0u,       ///< 逆解求解成功
-  kLeakVelAngFdb  = 1u << 1,  ///< 缺少速度角反馈
+  kIkSolveOk = 0u,            ///< 逆解求解成功
+  kLeakVelAngFdb = 1u << 1,   ///< 缺少速度角反馈
   kRadiusTooSmall = 1u << 2,  ///< 车轮半径过小
   kLengthTooSmall = 1u << 3,  ///< 车轮中心到转动中心的距离过小
-  kFailReturn     = 1u << 4,  ///< 传递结果失败
+  kFailReturn = 1u << 4,      ///< 传递结果失败
 };
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -91,14 +91,14 @@ class MoveVec
   float& x() { return data_[0]; };
   float& y() { return data_[1]; };
   float& w() { return data_[2]; };
-  float  x() const { return data_[0]; };
-  float  y() const { return data_[1]; };
-  float  w() const { return data_[2]; };
+  float x() const { return data_[0]; };
+  float y() const { return data_[1]; };
+  float w() const { return data_[2]; };
 
-  float*       vec() { return data_; };
+  float* vec() { return data_; };
   const float* vec() const { return data_; };
 
-  float&       operator[](size_t idx) { return data_[idx]; };
+  float& operator[](size_t idx) { return data_[idx]; };
   const float& operator[](size_t idx) const { return data_[idx]; };
 
   void rotate(float ang, MoveVec* res_ptr = nullptr) const;
@@ -114,13 +114,13 @@ class PosVec
 
   float& x() { return data_[0]; };
   float& y() { return data_[1]; };
-  float  x() const { return data_[0]; };
-  float  y() const { return data_[1]; };
+  float x() const { return data_[0]; };
+  float y() const { return data_[1]; };
 
-  float*       vec() { return data_; };
+  float* vec() { return data_; };
   const float* vec() const { return data_; };
 
-  float  operator[](size_t idx) const { return data_[idx]; };
+  float operator[](size_t idx) const { return data_[idx]; };
   float& operator[](size_t idx) { return data_[idx]; };
 
   float norm() const;
@@ -155,19 +155,19 @@ class PosVec
  * @attention 对于麦克纳姆轮，由于代码中 gamma 是固定的 pi/4，因此需要特别确定其转向角度使其 gamma 值在车辆上满足 pi/4。
  */
 struct WheelParams {
-  uint32_t opt_mask       = 0u;            ///< 优化选项掩码
-  float    theta_vel_fdb  = 0.0f;          ///< 反馈的车轮转向角度
-  float    d_castor       = 0.0f;          ///< 车轮中心到车轮垂直转轴的距离，单位：m
-  float    gamma          = 0.0f;          ///< 辊子转轴与车轮转轴之间的最小夹角，单位：rad
-  float    radius         = 0.0f;          ///< 车轮半径，单位：m
-  PosVec   wheel_pos      = PosVec(0, 0);  ///< 车轮垂直转轴在底盘坐标系下的位置，单位：m
-  PosVec*  center_pos_ptr = nullptr;       ///< 底盘旋转中心位置，单位：m
+  uint32_t opt_mask = 0u;            ///< 优化选项掩码
+  float theta_vel_fdb = 0.0f;        ///< 反馈的车轮转向角度
+  float d_castor = 0.0f;             ///< 车轮中心到车轮垂直转轴的距离，单位：m
+  float gamma = 0.0f;                ///< 辊子转轴与车轮转轴之间的最小夹角，单位：rad
+  float radius = 0.0f;               ///< 车轮半径，单位：m
+  PosVec wheel_pos = PosVec(0, 0);   ///< 车轮垂直转轴在底盘坐标系下的位置，单位：m
+  PosVec* center_pos_ptr = nullptr;  ///< 底盘旋转中心位置，单位：m
 };
 
 struct IkSolveRes {
-  bool  is_no_side_slip = false;  ///< 此次运动指令是否满足无侧滑约束
-  float rot_spt         = 0.0f;   ///< 逆解的车轮转动速度，单位：rad/s
-  float theta_vel_ref   = 0.0f;   ///< 逆解的车轮转向角度，单位：rad
+  bool is_no_side_slip = false;  ///< 此次运动指令是否满足无侧滑约束
+  float rot_spt = 0.0f;          ///< 逆解的车轮转动速度，单位：rad/s
+  float theta_vel_ref = 0.0f;    ///< 逆解的车轮转向角度，单位：rad
 };
 
 class Wheel : public MemMang
@@ -369,20 +369,20 @@ class Wheel : public MemMang
       dist -= *params_.center_pos_ptr;
     }
     alpha_ = dist.ang();
-    l_     = dist.norm();
+    l_ = dist.norm();
   };
 
-  float       alpha_       = 0;  ///< x 轴正方向与底盘旋转中心到车轮垂直旋转轴的有向线段的夹角
-  float       l_           = 0;  ///< 底盘旋转中心到车轮垂直旋转轴的有向线段长度
-  IkSolveRes  iksolve_res_ = {.is_no_side_slip = false, .rot_spt = 0, .theta_vel_ref = 0};
-  WheelParams params_      = {
-           .opt_mask       = 0,
-           .theta_vel_fdb  = 0,
-           .d_castor       = 0,
-           .gamma          = 0,
-           .radius         = 0,
-           .wheel_pos      = PosVec(0, 0),
-           .center_pos_ptr = nullptr,
+  float alpha_ = 0;  ///< x 轴正方向与底盘旋转中心到车轮垂直旋转轴的有向线段的夹角
+  float l_ = 0;      ///< 底盘旋转中心到车轮垂直旋转轴的有向线段长度
+  IkSolveRes iksolve_res_ = {.is_no_side_slip = false, .rot_spt = 0, .theta_vel_ref = 0};
+  WheelParams params_ = {
+      .opt_mask = 0,
+      .theta_vel_fdb = 0,
+      .d_castor = 0,
+      .gamma = 0,
+      .radius = 0,
+      .wheel_pos = PosVec(0, 0),
+      .center_pos_ptr = nullptr,
   };
 };
 
@@ -425,17 +425,18 @@ class OmniWheel : public SwedishWheel
 
   explicit OmniWheel(const WheelParams& params) : SwedishWheel(params){};
 
-  virtual void setGamma(float gamma) override { params_.gamma = M_PI_2; }
+  virtual void setGamma(float gamma) override { params_.gamma = 0; }
 };
 
 class SteeredStandardWheel : public Wheel
 {
  public:
   enum OptMask {
-    kOptNone          = 0,
-    kUseThetaVelFdb   = 1u << 0,  ///< 使用反馈的车轮转角计算车轮转速
-    kMinThetaVelDelta = 1u << 1,  ///< 通过转速反向使车轮转角变化最小
-    kCosRotSpd        = 1u << 2,  ///< 当使用期望的车轮转角计算车轮转速时，对转速乘以 sin 函数
+    kOptNone = 0,
+    kUseThetaVelFdb = 1u << 0,            ///< 使用反馈的车轮转角计算车轮转速
+    kMinThetaVelDelta = 1u << 1,          ///< 通过转速反向使车轮转角变化最小
+    kCosRotSpd = 1u << 2,                 ///< 当使用期望的车轮转角计算车轮转速时，对转速乘以 sin 函数
+    kKeepLastThetaVelRefWhen0 = 1u << 3,  ///< 当车轮转速为 0 时，保持上一次的速度矢量角度
   };
 
   explicit SteeredStandardWheel(const WheelParams& params) : Wheel(params){};
@@ -447,11 +448,11 @@ class SphericalWheel : public Wheel
 {
  public:
   enum OptMask {
-    kOptNone          = 0,
-    kUseThetaVelFdb   = 1u << 0,  ///< 使用反馈的车轮转角计算车轮转速
+    kOptNone = 0,
+    kUseThetaVelFdb = 1u << 0,    ///< 使用反馈的车轮转角计算车轮转速
     kMinThetaVelDelta = 1u << 1,  ///< 通过转速反向使车轮转角变化最小
-    kCosRotSpd        = 1u << 2,  ///< 当使用期望的车轮转角计算车轮转速时，对转速乘以 sin 函数
-    kAsServer         = 1u << 3,  ///< 作为随动轮使用
+    kCosRotSpd = 1u << 2,         ///< 当使用期望的车轮转角计算车轮转速时，对转速乘以 sin 函数
+    kAsServer = 1u << 3,          ///< 作为随动轮使用
   };
   explicit SphericalWheel(const WheelParams& params) : Wheel(params){};
 
@@ -464,10 +465,10 @@ class CastorWheel : public Wheel
   explicit CastorWheel(const WheelParams& params) : Wheel(params){};
 
   IkSolveStatus ikSolve(const MoveVec& v, IkSolveRes* res_ptr, const float* theta_vel_fdb_ptr) override;
-  virtual void  setDCaster(float d) { params_.d_castor = fabsf(d); };
+  virtual void setDCaster(float d) { params_.d_castor = fabsf(d); };
 
  private:
-  float    d_beta;
+  float d_beta;
   uint32_t last_tick_;
 };
 
@@ -487,13 +488,23 @@ class ChassisIkSolver : public MemMang
    * @return IkSolveStatus 返回逆向运动学解的状态。
    */
   IkSolveStatus solve(const MoveVec& v, float* theta_vel_fdbs_ptr);
+
+  /** 
+   * @brief 求解轮式移动机器人的底盘逆向运动学问题
+   * 
+   * @param v 输入的移动向量
+   * @param theta_i2r 移动向量的参考坐标系到底盘坐标系的旋转角度，右手定则判定旋转正方向，单位：弧度。
+   * @param theta_vel_fdbs_ptr 传入速度矢量角度反馈数组的指针，默认为 nullptr。对于转向标准轮、球轮和脚轮，如果为 nullptr 则意味着缺少实时的速度矢量角度，将采用 0 进行计算。
+   * @return IkSolveStatus 返回逆向运动学解的状态。
+   */
+  IkSolveStatus solve(const MoveVec& v, float theta_i2r, float* theta_vel_fdbs_ptr);
   // 链表操作
   /**
    * @brief 获取轮子链表容器中元素的数量。
    *
    * @return size_t 链表容器中轮子的数量。
    */
-  size_t        size() const { return wheel_list_.size(); };
+  size_t size() const { return wheel_list_.size(); };
 
   /**
    * @brief 向轮子链表容器末尾添加一个新的轮子，类型和参数由传入参数指定。
@@ -612,8 +623,9 @@ class ChassisIkSolver : public MemMang
   IkSolveStatus getIsNoSideSlipAll(bool* is_no_side_slips_ptr) const;
 
  private:
-  WheelList wheel_list_     = WheelList();
-  PosVec    control_center_ = PosVec(0, 0);
+  WheelList wheel_list_ = WheelList();    ///< 轮子链表
+  PosVec control_center_ = PosVec(0, 0);  ///< 底盘旋转中心位置
+  MoveVec vel_r_ = MoveVec(0, 0, 0);      ///< 底盘坐标系下的速度
 };
 
 /* Exported variables --------------------------------------------------------*/

@@ -212,7 +212,7 @@ class Motor : public MemMang
 
   MotorInfo motor_info_;  ///* 电机状态
 
-  static constexpr float kCross0ValueThres = 0.3f;  ///* 过零阈值
+  static constexpr float kCross0ValueThres = 0.5f;  ///* 过零阈值
 
   float normAngle(float angle);
 };

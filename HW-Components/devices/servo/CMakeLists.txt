@@ -62,7 +62,7 @@ if(use_${lib_name})
 
   else()
     # 设置依赖的库
-    set(depend_libs drivers ${HWC_LIB_PREFIX}_tools)
+    set(depend_libs drivers ${HWC_LIB_PREFIX}_tools ${HWC_LIB_PREFIX}_bsp_stm32_hal)
 
     # ~~~
     # 添加库并设置头文件目录

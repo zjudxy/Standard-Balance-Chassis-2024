@@ -62,9 +62,9 @@ struct __PID_PACKED_PARAMS BasicPidParams {
   uint32_t         max_interval_ms    = 5;      ///< 最大控制周期，单位ms，超出表示采样异常, 如果`auto_reset`为true，则会自动清零
   // 优化器
   // 输入优化器
-  SetpointRamping  setpoint_ramping   = SetpointRamping(false, -0.1, 0.1, 0.1);  ///< 给定值平滑优化器
+  SetpointRamping  setpoint_ramping   = SetpointRamping(true, -0.1, 0.1, 0.1);  ///< 给定值平滑优化器
   // 误差计算优化
-  DeadBand         dead_band          = DeadBand(false, -0.001f, 0.001f);  ///< 死区优化器
+  DeadBand         dead_band          = DeadBand(true, -0.001f, 0.001f);  ///< 死区优化器
   PeriodSub        period_sub         = PeriodSub(false, 0.0f);           ///< 周期最小差值优化器
   // 积分优化
   InteAntiWindup   inte_anti_windup   = InteAntiWindup(true, -1.0f, 1.0f);      ///< 积分抗风up优化器

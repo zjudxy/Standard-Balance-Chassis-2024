@@ -13,8 +13,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_
-#define HW_COMPONETS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_
+#define HW_COMPONENTS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include <cstddef>
@@ -75,4 +75,4 @@ class Observer : public MemMang
 }  // namespace observer
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_OBSERVER_OBSERVER_BASE_HPP_ */

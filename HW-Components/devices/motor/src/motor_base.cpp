@@ -223,9 +223,9 @@ float Motor::normAngle(float angle)
 {
   switch (motor_info_.angle_range) {
     case kAngleRangeNegPiToPosPi:
-      return hello_world::NormPeriodData(-PI, PI, angle);
+      return NormPeriodData(-PI, PI, angle);
     case kAngleRange0To2Pi:
-      angle = hello_world::NormPeriodData(0, 2 * PI, angle);
+      return NormPeriodData(0, 2 * PI, angle);
     case kAngleRangeNegInfToPosInf:
     default:
       return angle;

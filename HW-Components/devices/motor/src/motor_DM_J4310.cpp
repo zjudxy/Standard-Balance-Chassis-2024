@@ -46,7 +46,7 @@ static const float kMaxAngle = PI;
 static const uint8_t kAngleBits = 16;
 static const float kMaxVel = 21.0f;
 static const uint8_t kVelBits = 12;
-static const float kMaxTorq = 7.0f;
+static const float kMaxTorq = 7.5f;
 static const uint8_t kTorqBits = 12;
 /* External variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

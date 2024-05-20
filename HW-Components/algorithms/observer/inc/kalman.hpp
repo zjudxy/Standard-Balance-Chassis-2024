@@ -13,8 +13,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_OBSERVER_KALMAN_HPP_
-#define HW_COMPONETS_ALGORITHMS_OBSERVER_KALMAN_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_OBSERVER_KALMAN_HPP_
+#define HW_COMPONENTS_ALGORITHMS_OBSERVER_KALMAN_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "arm_math.h"
@@ -90,4 +90,4 @@ class Kalman : public Observer
 }  // namespace observer
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_OBSERVER_KALMAN_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_OBSERVER_KALMAN_HPP_ */

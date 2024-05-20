@@ -64,8 +64,8 @@ void MoveVec::rotate(float ang, MoveVec* res_ptr) const
   float c, s;
   _sin_cos(ang, &s, &c);
 
-  res_ptr->x() = c * x() - s * y();
-  res_ptr->y() = s * x() + c * y();
+  res_ptr->x() = c * x() + s * y();
+  res_ptr->y() = -s * x() + c * y();
   res_ptr->w() = w();  // w is not changed by rotation.
 }
 
@@ -78,12 +78,12 @@ IkSolveStatus FixedStandardWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr,
   IkSolveStatus status = IkSolveStatus::kIkSolveOk;
 
   if (params_.radius < 0.001) {
-    status         = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
+    status = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
     params_.radius = 0.001;
   }
 
-  float aby     = params_.theta_vel_fdb + M_PI_2;
-  float by      = aby - alpha_;
+  float aby = params_.theta_vel_fdb + M_PI_2;
+  float by = aby - alpha_;
   float sin_aby = 0, cos_aby = 0, sin_by = 0, cos_by = 0;
   _sin_cos(aby, &sin_aby, &cos_aby);
   _sin_cos(by, &sin_by, &cos_by);
@@ -92,12 +92,12 @@ IkSolveStatus FixedStandardWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr,
   float C1[3] = {cos_aby, sin_aby, l_ * sin_by};
 
   // 无侧滑约束求解
-  float no_side_slip_val       = _vec_dot(C1, v.vec(), 3);
+  float no_side_slip_val = _vec_dot(C1, v.vec(), 3);
   iksolve_res_.is_no_side_slip = (-0.001f < no_side_slip_val) && (no_side_slip_val < 0.001f);
-  iksolve_res_.theta_vel_ref   = params_.theta_vel_fdb;
+  iksolve_res_.theta_vel_ref = params_.theta_vel_fdb;
 
   // 滚动约束求解
-  float rot_spd        = _vec_dot(J1, v.vec(), 3) / params_.radius;
+  float rot_spd = _vec_dot(J1, v.vec(), 3) / params_.radius;
   iksolve_res_.rot_spt = rot_spd;
   // 记录结果
   if (res_ptr != nullptr) {
@@ -113,12 +113,12 @@ IkSolveStatus SwedishWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, const
   IkSolveStatus status = IkSolveStatus::kIkSolveOk;
 
   if (params_.radius < 0.001) {
-    status         = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
+    status = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
     params_.radius = 0.001;
   }
 
-  float aby     = params_.theta_vel_fdb + M_PI_2 + getGamma();
-  float by      = aby - alpha_;
+  float aby = params_.theta_vel_fdb + M_PI_2 + getGamma();
+  float by = aby - alpha_;
   float sin_aby = 0, cos_aby = 0, sin_by = 0, cos_by = 0;
   _sin_cos(aby, &sin_aby, &cos_aby);
   _sin_cos(by, &sin_by, &cos_by);
@@ -129,10 +129,14 @@ IkSolveStatus SwedishWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, const
   // 无侧滑约束求解
   // float no_side_slip_val = _vec_dot(C1, v.vec(), 3);
   iksolve_res_.is_no_side_slip = true;
-  iksolve_res_.theta_vel_ref   = params_.theta_vel_fdb;
+  iksolve_res_.theta_vel_ref = params_.theta_vel_fdb;
 
   // 滚动约束求解
-  float rot_spd        = _vec_dot(J1, v.vec(), 3) / params_.radius;
+  float cos_gamma = _cos(getGamma());
+  float rot_spd = 0;
+  if (fabs(cos_gamma) > 0.001) {
+    rot_spd = _vec_dot(J1, v.vec(), 3) / (params_.radius * cos_gamma);
+  }
   iksolve_res_.rot_spt = rot_spd;
   // 记录结果
   if (res_ptr != nullptr) {
@@ -154,11 +158,11 @@ IkSolveStatus SteeredStandardWheel::ikSolve(const MoveVec& v, IkSolveRes* res_pt
   }
 
   if (params_.radius < 0.001) {
-    status         = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
+    status = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
     params_.radius = 0.001;
   }
 
-  float a        = alpha_;
+  float a = alpha_;
   float beta_fdb = getBeta(params_.theta_vel_fdb);
   float sin_a, cos_a;
   float sin_b_fdb, cos_b_fdb;
@@ -169,21 +173,25 @@ IkSolveStatus SteeredStandardWheel::ikSolve(const MoveVec& v, IkSolveRes* res_pt
 
   // 无侧滑约束求解
   float beta_ref = 0;
+  if (params_.opt_mask & kKeepLastThetaVelRefWhen0) {
+    beta_ref = getBeta(iksolve_res_.theta_vel_ref);
+  }
+
   if (!IsZeroVec(v.vec(), 3)) {
     beta_ref = _atan2(var1, var2);
   }
   float theta_vel_delta = 0.0f;
-  float rot_spd_dir     = 1.0f;
+  float rot_spd_dir = 1.0f;
   if (params_.opt_mask & kMinThetaVelDelta) {
     theta_vel_delta = beta_ref - beta_fdb;
     if (fabsf(theta_vel_delta) / M_PI_2 > 1) {
-      beta_ref   += PI;
+      beta_ref += PI;
       rot_spd_dir = -1.0f;
     }
   }
   iksolve_res_.theta_vel_ref = NormPeriodData(-PI, PI, beta_ref + alpha_ - M_PI_2);
 
-  float no_side_slip_val       = var1 * cos_b_fdb - var2 * sin_b_fdb;
+  float no_side_slip_val = var1 * cos_b_fdb - var2 * sin_b_fdb;
   iksolve_res_.is_no_side_slip = (-0.001f < no_side_slip_val) && (no_side_slip_val < 0.001f);
 
   float sin_b, cos_b;
@@ -191,7 +199,7 @@ IkSolveStatus SteeredStandardWheel::ikSolve(const MoveVec& v, IkSolveRes* res_pt
 
   if (params_.opt_mask & OptMask::kUseThetaVelFdb) {
     sin_b = sin_b_fdb, cos_b = cos_b_fdb;
-    rot_spd  = (var1 * sin_b + var2 * cos_b) / params_.radius;
+    rot_spd = (var1 * sin_b + var2 * cos_b) / params_.radius;
     rot_spd *= rot_spd_dir;
     // ! 可能还需要反向
   } else {
@@ -225,11 +233,11 @@ IkSolveStatus SphericalWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, con
   }
 
   if (params_.radius < 0.001) {
-    status         = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
+    status = (IkSolveStatus)(status | IkSolveStatus::kRadiusTooSmall);
     params_.radius = 0.001;
   }
 
-  float a        = alpha_;
+  float a = alpha_;
   float beta_fdb = getBeta(params_.theta_vel_fdb);
   float sin_a, cos_a;
   float sin_b_fdb, cos_b_fdb;
@@ -244,11 +252,11 @@ IkSolveStatus SphericalWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, con
     beta_ref = _atan2(var1, var2);
   }
   float theta_vel_delta = 0.0f;
-  float rot_spd_dir     = 1.0f;
+  float rot_spd_dir = 1.0f;
   if (params_.opt_mask & kMinThetaVelDelta) {
     theta_vel_delta = beta_ref - beta_fdb;
     if (fabsf(theta_vel_delta) / M_PI_2 > 1) {
-      beta_ref   += PI;
+      beta_ref += PI;
       rot_spd_dir = -1.0f;
     }
   }
@@ -257,7 +265,7 @@ IkSolveStatus SphericalWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, con
   if (params_.opt_mask & OptMask::kAsServer) {
     iksolve_res_.is_no_side_slip = true;
   } else {
-    float no_side_slip_val       = var1 * cos_b_fdb - var2 * sin_b_fdb;
+    float no_side_slip_val = var1 * cos_b_fdb - var2 * sin_b_fdb;
     iksolve_res_.is_no_side_slip = (-0.001f < no_side_slip_val) && (no_side_slip_val < 0.001f);
   }
 
@@ -266,7 +274,7 @@ IkSolveStatus SphericalWheel::ikSolve(const MoveVec& v, IkSolveRes* res_ptr, con
 
   if (params_.opt_mask & OptMask::kUseThetaVelFdb) {
     sin_b = sin_b_fdb, cos_b = cos_b_fdb;
-    rot_spd  = (var1 * sin_b + var2 * cos_b) / params_.radius;
+    rot_spd = (var1 * sin_b + var2 * cos_b) / params_.radius;
     rot_spd *= rot_spd_dir;
     // ! 可能还需要反向
   } else {
@@ -296,12 +304,39 @@ IkSolveStatus ChassisIkSolver::solve(const MoveVec& v, float* theta_vel_fdbs_ptr
 
   size_t idx = 0;
 
+  vel_r_ = v;
+
   for (auto wheel : wheel_list_) {
     IkSolveRes res;
 
     float* theta_vel_fdb_ptr = theta_vel_fdbs_ptr == nullptr ? nullptr : theta_vel_fdbs_ptr + idx;
 
     IkSolveStatus wheel_status = wheel->ikSolve(v, &res, theta_vel_fdb_ptr);
+
+    status = IkSolveStatus(status | wheel_status);
+
+    idx++;
+  }
+  return status;
+};
+
+IkSolveStatus ChassisIkSolver::solve(const MoveVec& v, float theta_i2r, float* theta_vel_fdbs_ptr)
+{
+  IkSolveStatus status = IkSolveStatus::kIkSolveOk;
+
+  MoveVec v_r;
+  v.rotate(theta_i2r, &v_r);
+
+  size_t idx = 0;
+
+  vel_r_ = v_r;
+
+  for (auto wheel : wheel_list_) {
+    IkSolveRes res;
+
+    float* theta_vel_fdb_ptr = theta_vel_fdbs_ptr == nullptr ? nullptr : theta_vel_fdbs_ptr + idx;
+
+    IkSolveStatus wheel_status = wheel->ikSolve(v_r, &res, theta_vel_fdb_ptr);
 
     status = IkSolveStatus(status | wheel_status);
 

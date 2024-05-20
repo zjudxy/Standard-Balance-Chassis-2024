@@ -19,6 +19,7 @@
 #include <cstring>
 
 #include "assert.hpp"
+#include "base.hpp"
 
 namespace hello_world
 {
@@ -35,11 +36,13 @@ namespace filter
  * @brief       微分跟踪器初始化
  * @param        r: 截止频率，单位：Hz
  * @param        Ts: 采样周期，单位：s
+ * @param        period: 数据周期，大于0时表示周期性数据
  * @param        dim: 输入输出维度
  * @retval       None
  * @note        None
  */
-Td::Td(float r, float Ts, size_t dim) : Filter(dim), kR_(r), kTs_(Ts)
+Td::Td(float r, float Ts, float period, size_t dim)
+    : Filter(dim), kR_(r), kTs_(Ts), kPeriod_(period)
 {
   /* 变量检查 */
 #pragma region
@@ -72,12 +75,20 @@ void Td::calc(const float* in_ls, float* out_ls)
   HW_ASSERT(out_ls != nullptr, "out must not be nullptr");
 #pragma endregion
 
+  float diff_x = 0;
   for (size_t i = 0; i < kDim_; i++) {
     x_ls_ptrs_[0][i] = x_ls_ptrs_[0][i] + kTs_ * x_ls_ptrs_[1][i];
+
+    if (kPeriod_ > 0) {
+      x_ls_ptrs_[0][i] = NormPeriodData(0, kPeriod_, x_ls_ptrs_[0][i]);
+      diff_x = PeriodDataSub(x_ls_ptrs_[0][i], in_ls[i], kPeriod_);
+    } else {
+      diff_x = x_ls_ptrs_[0][i] - in_ls[i];
+    }
+
     x_ls_ptrs_[1][i] =
         x_ls_ptrs_[1][i] -
-        kTs_ * (kR_ * kR_ * x_ls_ptrs_[0][i] +
-                2 * kR_ * x_ls_ptrs_[1][i] - kR_ * kR_ * in_ls[i]);
+        kTs_ * (kR_ * kR_ * diff_x + 2 * kR_ * x_ls_ptrs_[1][i]);
   }
 
   memcpy(out_ls, x_ls_ptrs_[1], kDim_ * sizeof(float));

@@ -53,14 +53,12 @@ uint32_t GetTickS() { return GetTickMs() / 1000; };
 #endif
 
 #ifdef USE_HAL_TICK
-#include "stm32h7xx_hal.h"
+#include "stm32_hal.hpp"
 namespace hello_world
 {
 namespace tick
 {
-uint32_t start_tick_us = GetTickUs();
-
-uint32_t GetTickUs() { return (uint32_t)((HAL_GetTick() * HAL_GetTickFreq()) * 1000 + SysTick->VAL * 1000 / SysTick->LOAD) - start_tick_us; };
+uint32_t GetTickUs() { return (uint32_t)((HAL_GetTick() * HAL_GetTickFreq()) * 1000 + SysTick->VAL * 1000 / SysTick->LOAD); };
 
 uint32_t GetTickMs() { return GetTickUs() / 1000; };
 

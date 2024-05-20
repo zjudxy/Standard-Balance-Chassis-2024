@@ -14,8 +14,8 @@
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef HW_COMPONETS_ALGORITHMS_FILTER_TD_HPP_
-#define HW_COMPONETS_ALGORITHMS_FILTER_TD_HPP_
+#ifndef HW_COMPONENTS_ALGORITHMS_FILTER_TD_HPP_
+#define HW_COMPONENTS_ALGORITHMS_FILTER_TD_HPP_
 
 /* Includes ------------------------------------------------------------------*/
 #include "filter_base.hpp"
@@ -31,7 +31,7 @@ namespace filter
 class Td : public Filter
 {
  public:
-  Td(float r, float Ts, size_t dim = 1);
+  Td(float r, float Ts, float period = 0.0f, size_t dim = 1);
   virtual ~Td();
 
   virtual void calc(const float* in_ls, float* out_ls) override;
@@ -40,6 +40,7 @@ class Td : public Filter
 
   const float kR_;   ///< 截止频率，单位：Hz
   const float kTs_;  ///< 采样周期，单位：s
+  const float kPeriod_;  ///< 数据周期，大于0时表示周期性数据
 
  private:
   float* x_ls_ptrs_[2];
@@ -50,4 +51,4 @@ class Td : public Filter
 }  // namespace filter
 }  // namespace hello_world
 
-#endif /* HW_COMPONETS_ALGORITHMS_FILTER_TD_HPP_ */
+#endif /* HW_COMPONENTS_ALGORITHMS_FILTER_TD_HPP_ */
