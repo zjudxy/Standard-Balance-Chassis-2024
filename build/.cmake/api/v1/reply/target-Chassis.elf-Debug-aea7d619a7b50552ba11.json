@@ -1,0 +1,2805 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "Chassis.elf"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"add_link_options",
+			"target_link_libraries",
+			"add_compile_options",
+			"add_definitions",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 218,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 140,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 179,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 182,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 183,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 225,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 226,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 139,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 151,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 152,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 156,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 170,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 174,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 221,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 222,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu11"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfloat-abi=hard"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfpu=fpv4-sp-d16"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mcpu=cortex-m4"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb-interwork"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-ffunction-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fdata-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fno-common"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fmessage-length=0"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-Og"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-g"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 13,
+					"define" : "DEBUG"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "STM32H723xx"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "USE_HAL_DRIVER"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "__CC_ASM"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Startup"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source/Templates"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Resources"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config/LQR_coff"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Tasks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/hooks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/pack"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/tags"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc/rfr_pkg"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/prv"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/src"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Cholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/CholmodSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX512"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AltiVec"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/CUDA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/Default"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/GPU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/HIP/hcc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/MSA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/NEON"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SSE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SVE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SYCL"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/ZVector"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/functors"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/products"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/util"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Eigenvalues"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Householder"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/IterativeLinearSolvers"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Jacobi"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/KLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/MetisSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/OrderingMethods"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PaStiXSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PardisoSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/QR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SPQRSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SVD"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCore"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseLU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseQR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/StlSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SuperLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/UmfPackSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/misc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/plugins"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/fsm/inc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/stm32_hal"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP/Include"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ahrs/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/base"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/pid/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/filter/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ik_solver/chassis/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/observer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/tick"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/imu/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/laser/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/motor/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/remote_control/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/servo/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/tools/inc"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "11"
+			},
+			"sourceIndexes" : 
+			[
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				28,
+				35,
+				37
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfloat-abi=hard"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfpu=fpv4-sp-d16"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mcpu=cortex-m4"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb-interwork"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-ffunction-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fdata-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fno-common"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fmessage-length=0"
+				},
+				{
+					"backtrace" : 11,
+					"fragment" : "-x"
+				},
+				{
+					"backtrace" : 11,
+					"fragment" : "assembler-with-cpp"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-Og"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-g"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 13,
+					"define" : "DEBUG"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "STM32H723xx"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "USE_HAL_DRIVER"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "__CC_ASM"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Startup"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source/Templates"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Resources"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config/LQR_coff"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Tasks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/hooks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/pack"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/tags"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc/rfr_pkg"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/prv"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/src"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Cholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/CholmodSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX512"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AltiVec"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/CUDA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/Default"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/GPU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/HIP/hcc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/MSA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/NEON"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SSE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SVE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SYCL"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/ZVector"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/functors"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/products"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/util"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Eigenvalues"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Householder"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/IterativeLinearSolvers"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Jacobi"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/KLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/MetisSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/OrderingMethods"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PaStiXSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PardisoSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/QR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SPQRSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SVD"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCore"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseLU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseQR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/StlSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SuperLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/UmfPackSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/misc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/plugins"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/fsm/inc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/stm32_hal"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP/Include"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ahrs/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/base"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/pid/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/filter/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ik_solver/chassis/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/observer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/tick"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/imu/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/laser/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/motor/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/remote_control/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/servo/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/tools/inc"
+				}
+			],
+			"language" : "ASM",
+			"sourceIndexes" : 
+			[
+				23
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu++17"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfloat-abi=hard"
+				},
+				{
+					"backtrace" : 8,
+					"fragment" : "-mfpu=fpv4-sp-d16"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mcpu=cortex-m4"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "-mthumb-interwork"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-ffunction-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fdata-sections"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fno-common"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "-fmessage-length=0"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-Og"
+				},
+				{
+					"backtrace" : 12,
+					"fragment" : "-g"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 13,
+					"define" : "DEBUG"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "STM32H723xx"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "USE_HAL_DRIVER"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "__CC_ASM"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Core/Startup"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Device/ST/STM32H7xx/Source/Templates"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/CMSIS/Include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Drivers/STM32H7xx_HAL_Driver/Src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Resources"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Robot_config/LQR_coff"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/Tasks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/hooks"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/logs/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/info"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/objects/pack"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/heads"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/remotes/origin"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/.git/refs/tags"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/inc/rfr_pkg"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/prv"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components-Referee/src"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Cholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/CholmodSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AVX512"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/AltiVec"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/CUDA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/Default"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/GPU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/HIP/hcc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/MSA"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/NEON"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SSE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SVE"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/SYCL"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/arch/ZVector"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/functors"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/products"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Core/util"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Eigenvalues"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Geometry/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Householder"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/IterativeLinearSolvers"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/Jacobi"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/KLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/LU/arch"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/MetisSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/OrderingMethods"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PaStiXSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/PardisoSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/QR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SPQRSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SVD"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCholesky"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseCore"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseLU"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SparseQR"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/StlSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/SuperLUSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/UmfPackSupport"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/misc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Eigen3/Eigen/src/plugins"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/fsm/inc"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/stm32_hal"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/Third_Party/Dsp/CMSIS-DSP/Include"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ahrs/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/base"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/controller/pid/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/filter/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/ik_solver/chassis/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/algorithms/observer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/bsp/tick"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/buzzer/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/imu/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/laser/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/motor/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/remote_control/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/devices/servo/inc"
+				},
+				{
+					"backtrace" : 15,
+					"isSystem" : true,
+					"path" : "X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/HW-Components/tools/inc"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				24,
+				26,
+				30,
+				33,
+				39,
+				43,
+				44,
+				46,
+				55,
+				61,
+				63,
+				65,
+				67,
+				69,
+				71,
+				73,
+				75,
+				138,
+				139,
+				140,
+				141
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 6,
+			"id" : "drivers::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "hwcomponents_bsp_stm32_hal::@7b37251b6bad7064c3a9"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "hwcomponents_algorithms_fsm::@537564da3c7ece035d66"
+		}
+	],
+	"id" : "Chassis.elf::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mfloat-abi=hard",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mfpu=fpv4-sp-d16",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "\"-Wl,-gc-sections,--print-memory-usage,-Map=X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/build/Chassis.map\"",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "-mcpu=cortex-m4",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "-mthumb",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "-mthumb-interwork",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-T",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "\"X:/Hello World/2024/Code/Standard-Balance-Chassis-2024/STM32H723VGTX_FLASH.ld\"",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "libdrivers.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\Third_Party\\Dsp\\libhwcomponents_third_party_dsp.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\ahrs\\libhwcomponents_algorithms_ahrs.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\controller\\libhwcomponents_algorithms_controller.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\filter\\libhwcomponents_algorithms_filter.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\fsm\\libhwcomponents_algorithms_fsm.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\ik_solver\\chassis\\libhwcomponents_algorithms_ik_solver_chassis.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\algorithms\\observer\\libhwcomponents_algorithms_observer.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\bsp\\stm32_hal\\libhwcomponents_bsp_stm32_hal.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\bsp\\tick\\libhwcomponents_bsp_tick.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\buzzer\\libhwcomponents_devices_buzzer.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\imu\\libhwcomponents_devices_imu.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\laser\\libhwcomponents_devices_laser.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\motor\\libhwcomponents_devices_motor.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\remote_control\\libhwcomponents_devices_remote_control.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\devices\\servo\\libhwcomponents_devices_servo.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\tools\\libhwcomponents_tools.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\bsp\\tick\\libhwcomponents_bsp_tick.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\Third_Party\\Dsp\\libhwcomponents_third_party_dsp.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "\"X:\\Hello World\\2024\\Code\\Standard-Balance-Chassis-2024\\Lib\\hwcomponents\\bsp\\stm32_hal\\libhwcomponents_bsp_stm32_hal.a\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "libdrivers.a",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "Chassis.elf",
+	"nameOnDisk" : "Chassis.elf",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				25,
+				27,
+				29,
+				31,
+				32,
+				34,
+				36,
+				38,
+				40,
+				41,
+				42,
+				45,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				56,
+				57,
+				58,
+				59,
+				60,
+				62,
+				64,
+				66,
+				68,
+				70,
+				72,
+				74,
+				76,
+				99,
+				100,
+				101,
+				102,
+				103,
+				104,
+				105,
+				106,
+				107,
+				108,
+				109,
+				110,
+				111,
+				112,
+				113,
+				114,
+				115,
+				116,
+				117,
+				118,
+				119,
+				120,
+				121,
+				122,
+				123,
+				124,
+				125,
+				126,
+				127,
+				128,
+				129,
+				130,
+				131,
+				132,
+				133,
+				134,
+				135,
+				136,
+				137
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				24,
+				26,
+				28,
+				30,
+				33,
+				35,
+				37,
+				39,
+				43,
+				44,
+				46,
+				55,
+				61,
+				63,
+				65,
+				67,
+				69,
+				71,
+				73,
+				75,
+				138,
+				139,
+				140,
+				141
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				23,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86,
+				87,
+				88,
+				89,
+				90,
+				91,
+				92,
+				93,
+				94,
+				95,
+				96,
+				97,
+				98,
+				142
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/dma.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/fdcan.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/gpio.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/iwdg.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/main.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/spi.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/stm32h7xx_hal_conf.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/stm32h7xx_it.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/tim.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Core/Inc/usart.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/dma.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/fdcan.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/gpio.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/iwdg.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/main.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/spi.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/stm32h7xx_hal_msp.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/stm32h7xx_it.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/syscalls.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/sysmem.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/system_stm32h7xx.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/tim.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Core/Src/usart.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Core/Startup/startup_stm32h723vgtx.s",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/HW_fdcan.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/HW_fdcan.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/chassis.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/chassis.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Resources/chassis_gimbal_comm.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/chassis_gimbal_comm.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/chassis_motor.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/chassis_motor.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/chassis_music.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/dist_measure.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/dist_measure.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Resources/filter.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/filter.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Resources/five_rods_calc.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/five_rods_calc.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/judge.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/judge.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/missed_extern.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/motor_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/mpc_test.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/referee_data.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/referee_data.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Resources/super_capacity.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/super_capacity.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/system.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Resources/tools.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/LQR_coff/motor_3508_120mm.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/LQR_coff/motor_8910_150mm.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/LQR_coff/motor_8910_200mm.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_cmd_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_comm_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Robot_config/chassis_ctrl_params.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_ctrl_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_detect_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_sense_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Robot_config/chassis_switch_params.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_cmd_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_cmd_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_comm_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_comm_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_ctrl_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_ctrl_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_detect_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_detect_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_sense_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_sense_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_switch_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_switch_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "Tasks/chassis_ui_task.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Tasks/chassis_ui_task.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/applypatch-msg.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/commit-msg.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/fsmonitor-watchman.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/post-update.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-applypatch.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-commit.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-merge-commit.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-push.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-rebase.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/pre-receive.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/prepare-commit-msg.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/push-to-checkout.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/sendemail-validate.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/hooks/update.sample",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/logs/refs/heads/v1.6.2",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/objects/pack/pack-ed832d5e841b75f90509e2a0785d8b289b190126.idx",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/objects/pack/pack-ed832d5e841b75f90509e2a0785d8b289b190126.pack",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/objects/pack/pack-ed832d5e841b75f90509e2a0785d8b289b190126.rev",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.git/refs/heads/v1.6.2",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/.gitignore",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/CMakeLists.txt",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/README.md",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/referee.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_decoder.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_encoder.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_official_pkgs.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_id.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0001_comp_status.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0002_comp_result.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0003_comp_robots_hp.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0101_team_events.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0102_team_suppliers.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0104_team_warning.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0105_team_dart_status.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0201_robot_performance.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0202_robot_power_heat.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0203_robot_pos.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0204_robot_buff.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0205_robot_aerial_support.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0206_robot_hurt.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0207_robot_shooter.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0208_robot_resource.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0209_robot_rfid.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x020A_robot_dart_client_cmd.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x020B_robot_ground_pos.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x020C_robot_robot_radar_mark.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x020D_robot_sentry_decision.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x020E_robot_radar_decision.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0301_inter_among_robots.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0301_inter_graphics.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0301_inter_radar_cmd.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0301_inter_sentry_cmd.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0302_inter_custom_ctrler.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0303_inter_map_client_to_robot.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0304_inter_kb_ctrler.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0305_inter_map_robot_to_client.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0306_inter_custom_kb_ctrler.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0307_inter_robot_traj.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_0x0308_inter_custom_msg.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/inc/rfr_pkg/rfr_pkg_core.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "HW-Components-Referee/prv/rfr_crc.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "HW-Components-Referee/src/rfr_crc.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "HW-Components-Referee/src/rfr_decoder.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "HW-Components-Referee/src/rfr_encoder.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 2,
+			"path" : "HW-Components-Referee/src/rfr_pkg_0x0301_inter_among_robots.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "STM32H723VGTX_FLASH.ld",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "EXECUTABLE"
+}
